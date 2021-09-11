@@ -1,4 +1,4 @@
-{"info": {"description": "Building Dataset - DrivenData Open Cities AI Challenge:    Segmenting Buildings for Disaster Resilience", "url": "", "version": "0.2.0", "year": 2020, "contributor": "risuo"}, "licenses": [{"id": 1, "name": "Attribution-NonCommercial-ShareAlike License", "url": "http://creativecommons.org/licenses/by-nc-sa/2.0/"}], "categories": [{"id": 1, "name": "buiding", "supercategory": "buildings"}], "images": [
+{"info": {"description": "Building Dataset - DrivenData Open Cities AI Challenge:    Segmenting Buildings for Disaster Resilience", "url": "", "version": "0.2.0", "year": 2020, "contributor": "risuo"}, "licenses": [{"id": 1, "name": "Attribution-NonCommercial-ShareAlike License", "url": "http://creativecommons.org/licenses/by-nc-sa/2.0/"}], "categories": [{"id": 1, "name": "Building", "supercategory": "buildings"}], "images": [
   {"id": 0, "file_name": "cloud-run-test/model_images/QdM8OxXX5D7EL8sEei_LbgXVYB_nlmXIMl3tTR4EgU4.png", "width": 512, "height": 512}],
 "annotations": [
   {"id": 0, "image_id": 0, "category_id": 1, "iscrowd": 0, "area": 8731, "bbox": [441.0, 130.0, 71.0, 178.0],
