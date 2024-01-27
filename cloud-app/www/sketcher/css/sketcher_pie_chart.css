@@ -1,82 +1,221 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
 
+html {
+    box-sizing: border-box;
+    overflow-y: scroll;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: white;
+}
+
+.col-sm-6 {
+    padding-bottom: calc(var(--bs-gutter-x) * .5);
+    padding-top: calc(var(--bs-gutter-x) * .5);
+    padding-left: calc(var(--bs-gutter-x) * .1);
+    padding-right: calc(var(--bs-gutter-x) * .1);
+}
+
 @keyframes bake-pie {
-  from {
-    transform: rotate(0deg) translate3d(0,0,0);
-  }
+    from {
+        transform: rotate(0deg) translate3d(0, 0, 0);
+    }
+}
+
+.portfolio {
+    margin-top: 12px
+}
+
+.col-sm-6 {
+    padding-bottom: calc(var(--bs-gutter-x) * .5);
+    padding-top: calc(var(--bs-gutter-x) * .5);
+}
+
+.row {
+    --bs-gutter-x: .5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.canvas-container {
+    margin: auto
+}
+
+.card-body {
+    padding: 8px 8px;
 }
 
 .pieID {
-  display: inline-block;
-  vertical-align: top;
+    display: inline-block;
+    vertical-align: middle;
 }
-.pie {
-  height: 200px;
-  width: 200px;
-  position: relative;
-  margin: 0 30px 30px 0;
-}
-.pie::before {
-  content: "";
-  display: block;
-  position: absolute;
-  background: #FFFFFF;
-  z-index: 1;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  top: 50px;
-  left: 50px;
-}
-.pie::after {
-  content: "";
-  display: block;
-  width: 120px;
-  height: 2px;
-  background: rgba(0,0,0,0.1);
-  border-radius: 50%;
-  box-shadow: 0 0 3px 4px rgba(0,0,0,0.1);
-  margin: 220px auto;
 
+.pie {
+    height: 150px;
+    width: 150px;
+    position: relative;
+    margin: 0 2px 30px 0;
 }
+
+.pie2 {
+    height: 150px;
+    width: 150px;
+    position: relative;
+    margin: 0 2px 30px 0;
+}
+
+.pie::before {
+    content: "";
+    display: block;
+    position: absolute;
+    background: #FFFFFF;
+    z-index: 1;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    top: 37px;
+    left: 37px;
+}
+
+.pie::after {
+    content: "";
+    display: block;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    box-shadow: 0 0 3px 4px rgba(0, 0, 0, 0.1);
+    margin: 165px auto;
+}
+
+.pie2::before {
+    content: "";
+    display: block;
+    position: absolute;
+    background: #FFFFFF;
+    z-index: 1;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    top: 37px;
+    left: 37px;
+}
+
+.pie2::after {
+    content: "";
+    display: block;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    box-shadow: 0 0 3px 4px rgba(0, 0, 0, 0.1);
+    margin: 165px auto;
+}
+
+.pieID {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.pieID2 {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 .slice {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  clip: rect(0px, 200px, 200px, 100px);
-  animation: bake-pie 1s;
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    clip: rect(0px, 150px, 150px, 75px);
+    animation: bake-pie 1s;
 }
+
 .slice span {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: black;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  clip: rect(0px, 200px, 200px, 100px);
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: black;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    clip: rect(0px, 150px, 150px, 75px);
 }
+
+.slice2 {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    clip: rect(0px, 150px, 150px, 75px);
+    animation: bake-pie 1s;
+}
+
+.slice2 span {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: black;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    clip: rect(0px, 150px, 150px, 75px);
+}
+
 .legend {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  background: #FFF;
-  padding: 15px;
-  font-size: 13px;
-  box-shadow: 1px 1px 0 #DDD,
-              2px 2px 0 #BBB;
+    list-style-type: none;
+    padding: 3px;
+    margin: 0;
+    background: #FFF;
+    font-size: 13px;
+    box-shadow: 1px 1px 0 #DDD,
+    2px 2px 0 #BBB;
 }
+
+.legend2 {
+    list-style-type: none;
+    padding: 3px;
+    margin: 0;
+    background: #FFF;
+    font-size: 13px;
+    box-shadow: 1px 1px 0 #DDD,
+    2px 2px 0 #BBB;
+}
+
 .legend li {
-  width: 150px;
-  height: 1.25em;
-  margin-bottom: 0.7em;
-  padding-left: 0.5em;
-  border-left: 1.25em solid black;
+    width: 184px;
+    height: 1.25em;
+    margin-bottom: 0.3em;
+    padding-left: 0.2em;
+    border-left: 1em solid black;
 }
+
+.legend2 li {
+    width: 184px;
+    height: 1.25em;
+    margin-bottom: 0.3em;
+    padding-left: 0.2em;
+    border-left: 1em solid black;
+}
+
 .legend em {
-  font-style: normal;
+    font-style: normal;
 }
+
+.legend2 em {
+    font-style: normal;
+}
+
 .legend span {
-  float: right;
+    float: right;
+}
+
+.legend2 span {
+    float: right;
 }

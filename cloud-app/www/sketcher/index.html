@@ -1,129 +1,248 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>GPU built Full 345 class Google Quick-Sketch CNN</title>
+    <!-- Generic head content for all pages -->
+    <meta charset="UTF-8"/>
+    <title>GPU built Full 345 class Google Quick-Sketch CNN</title>
 
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- bs4 css -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-<!-- css pie -->
-<link rel="stylesheet" href="css/sketcher_pie_chart.css">
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+
+</head>
+
+<!-- Specific for this page content -->
 
 <!-- jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-<!-- Popper JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-
-<!-- Latest compiled JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-
 <!-- TensorFlow.js script -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
 
 <!-- canvas script -->
 <script src="js/fabric.js"></script>
 
 <!-- main script -->
-<script src = "js/main.js" > </script>
+<script src="js/main.js"></script>
 
-<!-- main css -->
-<link rel = "stylesheet" href="www/css/main.css" >
-</head>
+
+<!-- css pie -->
+<link rel="stylesheet" href="css/sketcher_pie_chart.css">
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-xl my-md-4">
+        <a class="navbar-brand" href="#"><h1>Peter Scott Miller</h1></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+                <!--
+                <li class="nav-item">
+                    <a class="nav-link disabled">Disabled</a>
+                </li>
+                -->
+            </ul>
+            <!--
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            -->
+        </div>
+    </div>
+</nav>
+
 <body>
-<nav class="navbar navbar-expand-sm bg-light navbar-light">
-  <!-- Brand/logo -->
-  <a class="navbar-brand" href="#"><h1>GPU built Google Quick-Sketch CNN</h1></a>
-  </nav>
-<div class="container-fluid">
 
-<blockquote class="blockquote text-justify" style="margin:30px;">
- <p> This page leans heavily on the Sketcher project develoepd by Zaid Alyafeai. His page is available here: <a href='https://zaidalyafeai.github.io/sketcher/'  target = "_blank"> Sketcher</a>. The CNN on this page was trained to recognize all 345 classes using the quick draw <a href='https://github.com/googlecreativelab/quickdraw-dataset' target = "_blank"> dataset</a>.
-    <p> This project is an extension of Zaid's implementation. Rather than limiting to 100 classes, I wanted to see how it would perform under all 345 classes.<p>
-    <p> Unsurprisingly, the accuracy is lower, however with training the model was able to achieve almost 90% Top 5 accuracy.<p>
-    <p> The model on this page was trained on the following CNN: <p>
-    <img src="images/CNN_Model.PNG?raw=true" alt="CNN_Model.PNG">
-    <p> This model was arrived at through 50 rounds of scikit-optimize to select from the following parameters: <p>
-    <img src="images/Optimize_Parameters.PNG?raw=true" alt="Optimize_Parameter.PNG">
-    <p> And resulted in the following convergence plot:<p>
-    <img src="images/Convergence_plot.PNG?raw=true" alt="Convergence_plot.PNG">
-    <p> Smaller, 60000 length train and 5000 length validation sets were used for the optimization.<p>
-    <p> The Training/Testing dataset had 1656000 and 20% validation split value, trained as such:<p>
-    <img src="images/training.PNG?raw=true" alt="training.PNG">
-    <p> The results of the loss graph more clearly shows slight overfitting, and a more optimal model around epoch 18.<p>
-    <img src="images/Accuracy_over_epoch.PNG?raw=true" alt="Accuracy_over_epoch.PNG">
-    <img src="images/Loss_over_epoch.PNG?raw=true" alt="Loss_over_epoch.PNG">
-    <p> The link to an earlier, simpler* Colaboratory Notebook prototype with only 160 classes is available here: <a href='https://colab.research.google.com/github/Risuo/Springboard/blob/master/Revised_TPU_Quick_Draw_Data.ipynb' target = "_blank"> Colab</a>
-    <small> *Fun note, the prototype was trained using Google's Tensor Processing Unit (TPU) </small><p>
-    <footer class="blockquote-footer">Peter Miller</footer>
-  </blockquote>
-</div>
 
-<div class="row">
-  <div class="col" style ='margin-left:100px;'>
-<h4 id ='status' >Loading Model...! </h4>
-<canvas id="canvas" width="300" height="300" class="canvas" style="border:1px solid #b9bfc9;margin-top:25px;"></canvas>
-<div class="btn-group" style = 'margin-top:40px; '>
-<input type="range" min="5" max="20" value="10" class="slider" id="myRange" style ='margin-top:20px;'>
-<button type="button" class="btn btn-outline-primary" onclick ='erase()' style ='margin-left:10px;' disabled>Clear</button>
+<div class="container-fluid" style="padding-left: 0; padding-right: 0">
+
+    <div class="row row-cols-4">
+
+
+        <div class="col-sm-6" style="width: 320px; max-width: 320px">
+            <h4 id='status' style="padding-left: var(--bs-gutter-x,.75rem); ">Loading Model...!</h4>
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="canvas" class="canvas" width=300 height=300
+                            style="margin:auto; border:1px solid #BBBBBB;"></canvas>
+                    <div class="btn-group" style='margin-top:25px; '>
+                        <input type="range" min="7" max="12" value="8" class="slider, hide" id="myRange">
+                        <button type="button" class="btn btn-outline-primary" onclick='erase()'
+                                style='margin-left:10px;' disabled>Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6" style="width: 360px; max-width: 360px">
+            <div class="card">
+                <div class="card-body" style="padding:.2rem">
+                    <div class="pieID pie">
+                    </div>
+                    <ul class="pieID legend">
+                        <li>
+                            <em id="sym1"></em>
+                            <span id="prob1"></span>
+                        </li>
+                        <li>
+                            <em id="sym2"></em>
+                            <span id="prob2"></span>
+                        </li>
+                        <li>
+                            <em id="sym3"></em>
+                            <span id="prob3"></span>
+                        </li>
+                        <li>
+                            <em id="sym4"></em>
+                            <span id="prob4"></span>
+                        </li>
+                        <li>
+                            <em id="sym5"></em>
+                            <span id="prob5"></span>
+                        </li>
+                        <li>
+                            <em id="sym6"></em>
+                            <span id="prob6"></span>
+                        </li>
+                        <li>
+                            <em id="sym7"></em>
+                            <span id="prob7"></span>
+                        </li>
+                        <li>
+                            <em id="sym8"></em>
+                            <span id="prob8"></span>
+                        </li>
+                        <li>
+                            <em id="sym9"></em>
+                            <span id="prob9"></span>
+                        </li>
+                        <li>
+                            <em id="sym10"></em>
+                            <span id="prob10"></span>
+                        </li>
+                    </ul>
+                    <canvas id="tensorCanvas1" class="canvas" width=300 height=300
+                            style="margin:auto; border:1px solid #BBBBBB; margin-top: 15px;">
+
+                    </canvas>
+                    <h4 id='descriptor1' style="padding-left: var(--bs-gutter-x,.75rem); ">^What the 28x28 Model
+                        sees^</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6" style="width: 320px; max-width: 320px">
+            <h4 id='status2' style="padding-left: var(--bs-gutter-x,.75rem); ">Loading Model...!</h4>
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="canvas2" width=300 height=300 style="margin:auto; border:1px solid #BBBBBB;"></canvas>
+                    <div class="btn-group" style='margin-top:25px; '>
+                        <input type="range" min="7" max="12" value="8" class="slider, hide" id="myRange2">
+                        <button id='clear' type="button" class="btn btn-outline-primary" onclick='erase()'
+                                style='margin-left:10px;' disabled>Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6" style="width: 360px; max-width: 360px">
+            <div class="card">
+                <div class="card-body" style="padding:.2rem">
+                    <div class="pieID2 pie2">
+
+                    </div>
+                    <ul class="pieID2 legend2">
+                        <li>
+                            <em id="sym11"></em>
+                            <span id="prob11"></span>
+                        </li>
+                        <li>
+                            <em id="sym12"></em>
+                            <span id="prob12"></span>
+                        </li>
+                        <li>
+                            <em id="sym13"></em>
+                            <span id="prob13"></span>
+                        </li>
+                        <li>
+                            <em id="sym14"></em>
+                            <span id="prob14"></span>
+                        </li>
+                        <li>
+                            <em id="sym15"></em>
+                            <span id="prob15"></span>
+                        </li>
+                        <li>
+                            <em id="sym16"></em>
+                            <span id="prob16"></span>
+                        </li>
+                        <li>
+                            <em id="sym17"></em>
+                            <span id="prob17"></span>
+                        </li>
+                        <li>
+                            <em id="sym18"></em>
+                            <span id="prob18"></span>
+                        </li>
+                        <li>
+                            <em id="sym19"></em>
+                            <span id="prob19"></span>
+                        </li>
+                        <li>
+                            <em id="sym20"></em>
+                            <span id="prob20"></span>
+                        </li>
+                    </ul>
+                    <canvas id="tensorCanvas2" class="canvas" width=300 height=300
+                            style="margin:auto; border:1px solid #BBBBBB; margin-top: 15px;">
+
+                    </canvas>
+                    <h4 id='descriptor2' style="padding-left: var(--bs-gutter-x,.75rem); ">^What the 56x56 Model
+                        sees^</h4>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-  <div class="col">
-    <section style="margin-top:120px">
-    <div class="pieID pie">
 
-    </div>
-    <ul class="pieID legend">
-      <li>
-        <em id = "sym1"></em>
-        <span id = "prob1" ></span>
-      </li>
-      <li>
-        <em id = "sym2"></em>
-        <span id = "prob2"></span>
-      </li>
-      <li>
-        <em id = "sym3"></em>
-        <span id = "prob3"></span>
-      </li>
-      <li>
-        <em id = "sym4"></em>
-        <span id = "prob4"></span>
-      </li>
-      <li>
-        <em id = "sym5"></em>
-        <span id = "prob5"></span>
-      </li>
-      <li>
-        <em id = "sym6"></em>
-        <span id = "prob6"></span>
-      </li>
-      <li>
-        <em id = "sym7"></em>
-        <span id = "prob7"></span>
-      </li>
-      <li>
-        <em id = "sym8"></em>
-        <span id = "prob8"></span>
-      </li>
-      <li>
-        <em id = "sym9"></em>
-        <span id = "prob9"></span>
-      </li>
-      <li>
-        <em id = "sym10"></em>
-        <span id = "prob10"></span>
-      </li>
-    </ul>
-  </section>
-</div>
-</div>
+
 </body>
 <script src="js/pie.js"></script>
 <script>
-	console.log('starting');
-	start('en')
+    console.log('starting');
+    start('en')
 </script>
 </html>
 

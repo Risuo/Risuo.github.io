@@ -1,12 +1,16 @@
-runtime: python37
+runtime: python38
 
 handlers:
   - url: /
     secure: always
     static_files: www/index.html
     upload: www/index.html
+    http_headers:
+      X-Frame-Options: SAMEORIGIN
 
   - url: /(.*)
     secure: always
     static_files: www/\1
     upload: www/(.*)
+    http_headers:
+      X-Frame-Options: SAMEORIGIN

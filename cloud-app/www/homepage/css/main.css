@@ -1,3 +1,33 @@
+body { background-color: dimgrey}
+p.lead { color: #FFFFFF}
+a:hover {color: goldenrod; border-bottom: 1px solid rgba(255, 255, 255, 1)}
+
+html {
+    overflow-y:scroll;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: white;
+}
+
+a.details {
+    color: darkkhaki;
+    border-bottom: none
+}
+
+.portfolio {
+    margin-top: 12px
+}
+
+.col-sm-6 {
+    padding-bottom: calc(var(--bs-gutter-x) * .5);
+    padding-top: calc(var(--bs-gutter-x) * .5);
+}
+
 .slider {
     -webkit-appearance: none;
     width: 230px;

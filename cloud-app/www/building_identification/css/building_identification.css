@@ -1,11 +1,24 @@
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: white;
+}
+
+html {
+    font-size: 100%;
+}
 
 body {
+    font: 0.625em/1em Verdana, Geneva, Arial, Helvetica, 'Courier Prime', monospace sans-serif;
     width: 100%;
     padding: 0;
     margin: 0;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    background-color: dimgrey
 }
 
 .hide {
@@ -29,7 +42,7 @@ body {
 }
 
 #activate-map {
-    background: url("../images/wh-background.png") no-repeat center;
+    background: url("../images/background_buildings.png") no-repeat center;
     height: calc(100%);
     background-size: cover;
     width: calc(100%);
@@ -64,19 +77,20 @@ body {
     -moz-box-sizing: border-box;
     outline: none;
     box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
-    background-color: #fff;
-    font-family: Roboto;
+    background-color: black;
+    margin-top: 5px;
     margin-right: auto;
     margin-left: auto;
 }
 
 #map-canvas {
     overflow: hidden;
-    position: absolute;
+    position: relative;
     width: 640px;
     height: 640px;
     margin: 15px 15px 15px 15px;
 }
+
 
 
 #coords {
@@ -102,32 +116,30 @@ body {
 }
 
 .pac-card {
-    margin: 15px 10px 10px 15px;
+    padding: 5px 2px 5px 2px;
     border-radius: 2px 0 0 2px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     outline: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    background-color: #fff;
-    font-family: Roboto;
+    background-color: black;
     width: 670px;
+    margin-top: 5px;
     margin-right: auto;
     margin-left: auto;
 }
 
 #pac-container {
-  margin-left: 12px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  margin-right: 12px;
+  margin-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-right: 5px;
 }
 
 #pac-input {
   background-color: #fff;
-  font-family: Roboto;
-  font-size: 15px;
   font-weight: 300;
-  padding: 0 11px 0 13px;
+  padding: 0 13px 0 13px;
   text-overflow: ellipsis;
   width: 95%;
 }
@@ -136,10 +148,66 @@ body {
     display: flex;
 }
 
+#log_container {
+    margin-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-right: 5px;
+    overflow: auto;
+    max-height: 160px;
+}
+
+.log_card {
+    padding: 5px 2px 5px 2px;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    font-family: 'Courier Prime', monospace;
+    background-color: black;
+    color: chartreuse;
+    font-size: small;
+    width: 670px;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-left: auto;
+
+
+}
+
+
+
+#log_container_2 {
+  margin-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-right: 5px;
+}
+
+.log_card_2 {
+    padding: 5px 2px 5px 2px;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    font-family: 'Courier Prime', monospace;
+    background-color: black;
+    color: crimson;
+    font-size: small;
+    width: 670px;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+
+
 #btnMLBegin {
     margin-left: auto;
     margin-right: auto;
-    margin-top: 15px;
+    margin-top: 5px;
 }
 
 #btnMLShow {

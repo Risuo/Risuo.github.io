@@ -26,32 +26,51 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-function appendScript( url, callback ) {
-    var script = document.createElement( "script" )
+// Send a dummy image to GCP Storage to begin (if necessary) cold-start loading.
+// This appears to reduce lag-time between selection & display availability for the first selection
+// from ~25seconds down to ~8-12seconds
+//console.log('Provisioning Cloud Run Instance')
+
+static_Img = document.createElement('img');
+static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + "38.89763405057457, -77.03643959073791" + '&zoom=' + "19" + '&maptype=satellite' + '&scale=1' + '&size=50x50' +
+    '&format=png32' + '&key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places';
+var dummy_URL = static_Img.src;
+//console.log('dummy_URL: ', dummy_URL)
+var filename = firebase.storage().ref('satellite_screenshots/' + '_dummy');
+fetch(dummy_URL).then(res => {
+    return res.blob();
+}).then(blob => {
+    filename.put(blob)
+}).catch(error => {
+    console.error(error);
+});
+
+function appendScript(url, callback) {
+    var script = document.createElement("script")
     script.type = "text/javascript";
-    if(script.readyState) {  //IE
-        script.onreadystatechange = function() {
-            if ( script.readyState === "loaded" || script.readyState === "complete" ) {
+    if (script.readyState) {  //IE
+        script.onreadystatechange = function () {
+            if (script.readyState === "loaded" || script.readyState === "complete") {
                 script.onreadystatechange = null;
                 callback();
             }
         };
     } else {  //Others
-        script.onload = function() {
+        script.onload = function () {
             callback();
         };
     }
 
     script.src = url;
-    document.getElementsByTagName( "head" )[0].appendChild( script );
+    document.getElementsByTagName("head")[0].appendChild(script);
 }
 
 
 function appendMap() {
-    appendScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places", function() {
-            $("#activate-map").css("display", "none");
-            initialize();
-            btnMLBegin.classList.remove('hide');
+    appendScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places", function () {
+        $("#activate-map").css("display", "none");
+        initialize();
+        btnMLBegin.classList.remove('hide');
     });
 }
 
@@ -63,29 +82,8 @@ function initialize() {
 
     let count = 0;
 
-    // Send a dummy image to GCP Storage to begin (if necessary) cold-start loading.
-    // This appears to reduce lag-time between selection & display availability for the first selection
-    // from ~25seconds down to ~8-12seconds
 
-    console.log('Sending Dummy Image')
-    static_Img = document.createElement('img');
-    static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + "38.89763405057457, -77.03643959073791" + '&zoom=' + "19" + '&maptype=satellite' + '&scale=1' + '&size=50x50' +
-        '&format=png32' + '&key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places';
-    var dummy_URL = static_Img.src;
-    console.log('dummy_URL: ', dummy_URL)
-    var filename = firebase.storage().ref('satellite_screenshots/' + '_dummy');
-
-        fetch(dummy_URL).then(res => {
-            return res.blob();
-        }).then(blob => {
-            filename.put(blob)
-        }).catch(error => {
-            console.error(error);
-        });
-
-
-
-    var latlng = new google.maps.LatLng(38.89763405057457, -77.03643959073791); // The White House, DC, USA
+    var latlng = new google.maps.LatLng(39.037278, -77.179171);
 
     var myOptions = {
         zoom: 19,
@@ -98,12 +96,12 @@ function initialize() {
         tilt: 0,
         rotateControl: false, // This line keeps the tilt option from appearing when the viewport is changed
         mapTypeControlOptions: {
-        mapTypeIds: ['']
+            mapTypeIds: ['']
         }
     };
 
     // add the map to the map placeholder
-    map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
     map.setTilt(0);
 
     //const coordsDiv = document.getElementById("coords");
@@ -128,40 +126,41 @@ function initialize() {
         infowindow.close();
         marker.setVisible(false);
         const place = autocomplete.getPlace();
-        console.log(place)
+        //console.log(place)
+        //console.log('Coordinates:')
 
         if (!place.geometry || !place.geometry.location) {
             window.alert("No details available for input: '" + place.name + "'");
             return;
         }
 
-       if (place.geometry.viewport) {
-           map.fitBounds(place.geometry.viewport);
-           map.setZoom(19);
-       } else {
-           map.setCenter(place.geometry.location);
-           map.setZoom(19);
-       }
-       marker.setPosition(place.geometry.location);
-       marker.setVisible(true);
-       infowindow.open(marker);
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+            map.setZoom(19);
+        } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(19);
+        }
+        marker.setPosition(place.geometry.location);
+        marker.setVisible(true);
+        infowindow.open(marker);
     });
 
     bounds = map.getBounds();
     //map.addListener("mousemove", (event) => {
-        //coordsDiv.textContent =
-            //"Center: " +
-            //map.getCenter() +
-            //bounds = map.getBounds()
-            //console.log(bounds.getNorthEast().lat())
-            //" Zoom: " +
-            //map.getZoom()
-            // +
-            //" lat: " +
-            //(event.latLng.lat()) +
-            //", " +
-            //"lng: " +
-            //(event.latLng.lng());
+    //coordsDiv.textContent =
+    //"Center: " +
+    //map.getCenter() +
+    //bounds = map.getBounds()
+    //console.log(bounds.getNorthEast().lat())
+    //" Zoom: " +
+    //map.getZoom()
+    // +
+    //" lat: " +
+    //(event.latLng.lat()) +
+    //", " +
+    //"lng: " +
+    //(event.latLng.lng());
     //});
     map.addListener("click", (event) => {
         centerUrl = map.getCenter().toUrlValue();
@@ -195,14 +194,17 @@ function initialize() {
 
 
     const btnMLBegin = document.getElementById('btnMLBegin')
-    const btnMLShow = document.getElementById('btnMLShow')
 
 // Click button to grab static image & display based on variables on dynamic map & upload to Firebase storage & retrieve URL for static map
 
-    btnMLBegin.addEventListener('click',  e => {
+    btnMLBegin.addEventListener('click', e => {
         count++;
-        console.log(count)
-        console.log(centerUrl, mapZoom);
+        //console.log(count)
+        //console.log("Center coordinates: ");
+        //console.log(centerUrl)
+        //console.log("<br /> Map Zoom:")
+        //console.log(mapZoom)
+        //console.log("<br />")
         predictionBounds = {
             north: bounds.getNorthEast().lat(),
             south: bounds.getSouthWest().lat(),
@@ -212,36 +214,51 @@ function initialize() {
 
         //btnMLShow.classList.remove('hide');
         //btnMLShow.classList.add('hide');
+        clear_logs();
         btnMLBegin.classList.add('hide');
 
+        log_container_2.classList.add('hide')
+        log_card_2.classList.add('hide')
+        log_2.classList.add('hide');
 
-        console.log('Bounds of Viewport = Bounds of Static Img:', predictionBounds)
+        log_container.classList.remove('hide')
+        log_card.classList.remove('hide')
+        log.classList.remove('hide');
+
+        //console.log('Bounds of Viewport = Bounds of Static Img:', predictionBounds)
         static_Img = document.createElement('img');
         static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + centerUrl + '&zoom=' + mapZoom + '&maptype=satellite' + '&scale=2' + '&size=640x640' +
             '&format=png32' + '&key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places';
         //document.getElementById('staticGrabSpot').appendChild(static_Img);
         var static_Url = static_Img.src;
-        console.log('static_Img URL:', static_Url)
+        console.log("> Static Image " + count + " identified. <br /> > Center coordinates: " + centerUrl + ".<br /> " +
+            "> Zoom Level: " + mapZoom + ".<br /> > Transferring image to ML processing container. <br />> ")
+        //console.log('static_Img URL:', static_Url)
         var uid = firebase.auth().currentUser.uid;
-        console.log(uid)
+        //console.log(uid)
         var filename_store = firebase.storage().ref('satellite_screenshots/' + uid + '_' + count);
 
         fetch(static_Url).then(res => {
             return res.blob();
         }).then(blob => {
             filename_store.put(blob)
+
                 .then(function (snapshot) { // actually, might be able to remove after the put(blob) bit.
                     return snapshot.ref.getDownloadURL()
                 }).then(url => { // This and the next 2 lines, starting at .then ending with }) can be removed once debugging is done
-                console.log("Firebase storage image uploaded available at: ", url);
+                if (count === 1) {
+                    console.log("<br />> Possible cold-start mode detected. Additional time for processing may be required. Subsequent requests will (generally) be quicker. See details page for more information.")
+                }
+                console.log("<br />> Image received by ML processing container.<br />> Beginning ML Processing.<br />> ");
+
             })
+
         }).catch(error => {
             console.error(error);
         });
 
 
-
-    //btnMLShow.addEventListener('click',    e => {
+        //btnMLShow.addEventListener('click',    e => {
 
         var uid = firebase.auth().currentUser.uid;
         map.setTilt(0);
@@ -251,36 +268,96 @@ function initialize() {
         var storage = firebase.storage();
         var predicted_Img_Path = storage.refFromURL('gs://sketcher-app-test-engine.appspot.com/processed_images/' + uid + '_' + count + '.png')
 
-        var tid = setInterval(function(){
+        var per_count = 0
+        var tid = setInterval(function () {
             pull_predicted_image()
-        },750)
+            console.log('.')
+            per_count += 1
+            //if (per_count === 35) {
+            //console.log("<br />")
+            //    per_count = 0
+            //} else {
+            //}
+        }, 800);
 
-        function pull_predicted_image(){
+        function pull_predicted_image() {
             predicted_Img_Path.getDownloadURL().then((url) => {
                 predicted_Img.src = url
-                console.log('Predicted_Img uploaded here:', predicted_Img.src)
+                //console.log('Predicted_Img uploaded here:', predicted_Img.src)
                 predictionOverlay = new google.maps.GroundOverlay(
                     predicted_Img.src, predictionBounds
                 );
-                predictionOverlay.setMap(map);
+
                 clearInterval(tid)
+                if (count === 1) {
+                    setTimeout(() => {
+                        console.log("<br /> > Best results tend to be in clearer (less tree-cover) higher-resolution areas (satellite imagery sources are not of uniform quality).");
+                    }, 200);
+                }
+                setTimeout(() => {
+                    console.log("<br /> > Predicted Image displayed below. ");
+                }, 400);
+                setTimeout(() => {
+                    console.log("<br /> > For a pre-selected 'high performance' result, click 'Pre-selected' below.");
+                }, 600);
+                setTimeout(() => {
+                    predictionOverlay.setMap(map);
+                }, 800);
+
                 //btnMLShow.classList.remove('hide')
-                btnMLBegin.classList.remove('hide');
+
+
+                if (mapZoom < 18) {
+                    log_container_2.classList.remove('hide')
+                    log_card_2.classList.remove('hide')
+                    log_2.classList.remove('hide');
+                    var logger2 = document.getElementById('log_2');
+                    logger2.innerHTML += "> Try zooming in closer. Best results tend to be at Zoom Levels 19 and 20.";
+                }
+
+                setTimeout(() => {
+                    btnMLBegin.classList.remove('hide');
+                }, 1000);
+                //log.classList.add('hide');
+                //log_container.classList.add('hide');
+                //log_card.classList.add('hide')
+
 
             }).catch(error => {
 
-        });
+            });
         }
 
-        setTimeout(function(){
+        setTimeout(function () {
             clearInterval(tid)
-        },25000)
-
-
+        }, 35000)
 
 
     });
 }
+
+function clear_logs() {
+    $('#log').empty()
+    $('#log_2').empty()
+}
+
+(function () {
+    if (!console) {
+        console = {};
+    }
+    var old = console.log;
+    var logger = document.getElementById('log');
+    var box = document.getElementById('log_container');
+    console.log = function (message) {
+        if (typeof message == 'object') {
+            //logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : String(message)); //+ '<br />';
+        } else {
+            logger.innerHTML += message; // + '<br />';
+            box.scrollTop = box.scrollHeight;
+
+        }
+    }
+})();
 
 
 //showPrediction.addEventListener('click', e => {
