@@ -31,19 +31,20 @@ firebase.initializeApp(firebaseConfig);
 // from ~25seconds down to ~8-12seconds
 //console.log('Provisioning Cloud Run Instance')
 
-static_Img = document.createElement('img');
-static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + "38.89763405057457, -77.03643959073791" + '&zoom=' + "19" + '&maptype=satellite' + '&scale=1' + '&size=50x50' +
-    '&format=png32' + '&key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places';
-var dummy_URL = static_Img.src;
-//console.log('dummy_URL: ', dummy_URL)
-var filename = firebase.storage().ref('satellite_screenshots/' + '_dummy');
-fetch(dummy_URL).then(res => {
-    return res.blob();
-}).then(blob => {
-    filename.put(blob)
-}).catch(error => {
-    console.error(error);
-});
+
+// static_Img = document.createElement('img');
+// static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + "38.534531215, -77.034331215" + '&zoom=' + "19" + '&maptype=satellite' + '&scale=1' + '&size=100x100' +
+//     '&format=png32' + '&key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places';
+// var dummy_URL = static_Img.src;
+// console.log('dummy_URL: ', dummy_URL)
+// var filename = firebase.storage().ref('satellite_screenshots/' + '_dummy');
+// fetch(dummy_URL).then(res => {
+//     return res.blob();
+// }).then(blob => {
+//     filename.put(blob)
+// }).catch(error => {
+//     console.error(error);
+// });
 
 function appendScript(url, callback) {
     var script = document.createElement("script")
@@ -87,6 +88,7 @@ function initialize() {
 
     var myOptions = {
         zoom: 19,
+        loading: 'async',
         center: latlng,
         mapTypeId: 'satellite',
         gestureHandling: 'greedy',
@@ -228,7 +230,7 @@ function initialize() {
         //console.log('Bounds of Viewport = Bounds of Static Img:', predictionBounds)
         static_Img = document.createElement('img');
         static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + centerUrl + '&zoom=' + mapZoom + '&maptype=satellite' + '&scale=2' + '&size=640x640' +
-            '&format=png32' + '&key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places';
+            '&format=png32' + '&key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places&loading=async';
         //document.getElementById('staticGrabSpot').appendChild(static_Img);
         var static_Url = static_Img.src;
         console.log("> Static Image " + count + " identified. <br /> > Center coordinates: " + centerUrl + ".<br /> " +
@@ -273,12 +275,12 @@ function initialize() {
             pull_predicted_image()
             console.log('.')
             per_count += 1
-            //if (per_count === 35) {
-            //console.log("<br />")
-            //    per_count = 0
-            //} else {
-            //}
-        }, 800);
+            if (per_count % 96 === 0) {
+                console.log("<br />")
+                per_count = 0
+            } else {
+            }
+        }, 1000);
 
         function pull_predicted_image() {
             predicted_Img_Path.getDownloadURL().then((url) => {
@@ -297,9 +299,9 @@ function initialize() {
                 setTimeout(() => {
                     console.log("<br /> > Predicted Image displayed below. ");
                 }, 400);
-                setTimeout(() => {
-                    console.log("<br /> > For a pre-selected 'high performance' result, click 'Pre-selected' below.");
-                }, 600);
+                // setTimeout(() => {
+                //     console.log("<br /> > For a pre-selected 'high performance' result, click 'Pre-selected' below.");
+                // }, 600);
                 setTimeout(() => {
                     predictionOverlay.setMap(map);
                 }, 800);
@@ -330,7 +332,7 @@ function initialize() {
 
         setTimeout(function () {
             clearInterval(tid)
-        }, 35000)
+        }, 350000)
 
 
     });

@@ -41,7 +41,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-xl my-md-4">
-        <a class="navbar-brand" href="#"><h1>Peter Scott Miller</h1></a>
+        <a class="navbar-brand" href="../index.html"><h1>Peter Scott Miller</h1></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -49,23 +49,28 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="">Home</a>
+                    <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
                 </li>
-                <li class="nav-item">
+                <!--<li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
-                </li>
+                </li>-->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Dropdown
+                        Navigate
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="../index.html">Home</a></li>
+                        <li><a class="dropdown-item" href="../building_identification/index.html">Building
+                            Identification</a></li>
+                        <li><a class="dropdown-item" href="./index.html">Quick-Sketch</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" href="../building_identification/building_details.html">Building
+                            Identification - Details</a></li>
+                        <li><a class="dropdown-item" href="./sketcher_details.html">Quick-Sketch - Details</a>
+                        </li>
                     </ul>
                 </li>
                 <!--
@@ -99,7 +104,7 @@
                     <canvas id="canvas" class="canvas" width=300 height=300
                             style="margin:auto; border:1px solid #BBBBBB;"></canvas>
                     <div class="btn-group" style='margin-top:25px; '>
-                        <input type="range" min="7" max="12" value="8" class="slider, hide" id="myRange">
+                        <input type="range" min="8" max="8" value="8" class="slider, hide" id="myRange">
                         <button type="button" class="btn btn-outline-primary" onclick='erase()'
                                 style='margin-left:10px;' disabled>Clear
                         </button>
@@ -169,7 +174,8 @@
                 <div class="card-body">
                     <canvas id="canvas2" width=300 height=300 style="margin:auto; border:1px solid #BBBBBB;"></canvas>
                     <div class="btn-group" style='margin-top:25px; '>
-                        <input type="range" min="7" max="12" value="8" class="slider, hide" id="myRange2">
+                        <!--    <input type="range" min="7" max="12" value="8" class="slider, hide" id="myRange2">
+                         -->
                         <button id='clear' type="button" class="btn btn-outline-primary" onclick='erase()'
                                 style='margin-left:10px;' disabled>Clear
                         </button>
