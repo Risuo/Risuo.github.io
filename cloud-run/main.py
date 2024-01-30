@@ -12,28 +12,24 @@
 #from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 #import io
 """
-#CloudRun implementation of Detectron2
-import os
-from flask import Flask, request
-import tempfile
-from google.cloud import storage
-
-#Detectron2 Dependencies
-import torch
-import numpy as np
-import cv2
 import logging
-from PIL import Image
+# CloudRun implementation of Detectron2
+import os
+import tempfile
 
-#Imports - Detectron2
-import detectron2
+# Detectron2 Dependencies
+import numpy as np
+from PIL import Image
+from detectron2 import model_zoo
+from detectron2.config import get_cfg
+# Imports - Detectron2
 from detectron2.data import MetadataCatalog
 from detectron2.data.datasets import register_coco_instances
-from detectron2.config import get_cfg
-from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor, DefaultTrainer
 from detectron2.utils.logger import setup_logger
 from detectron2.utils.visualizer import Visualizer
+from flask import Flask, request
+from google.cloud import storage
 
 setup_logger()
 
@@ -126,6 +122,7 @@ def index():
         print(f"error: {e}")
         return ("", 500)
 
+
 """
 @app.route('/', methods=["GET"] )
 def index2():
@@ -194,8 +191,9 @@ def hi():
 """
 
 if __name__ == "__main__":
-    PORT = int(os.getenv("PORT")) if os.getenv("PORT") else 8080
+    # PORT = int(os.getenv("PORT")) if os.getenv("PORT") else 8080
 
     # This is used when running locally. Gunicorn is used to run the
     # application on Cloud Run. See entrypoint in Dockerfile.
-    app.run(host="127.0.0.1", port=PORT, debug=True)
+    # app.run(host="127.0.0.1", port=PORT, debug=True)
+    app.run(debug=True, host="127.0.0.1", port=int(os.environ.get("PORT", 8080)))

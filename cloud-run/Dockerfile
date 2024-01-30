@@ -21,5 +21,5 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 COPY . .
 
 # Run main.py when the container launches
-#ENTRYPOINT ["python", "main.py"]
+# ENTRYPOINT ["python", "main.py"]
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
