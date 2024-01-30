@@ -100,14 +100,11 @@
                             as well as many other sources.
                         </li>
                         <li>The basic project line was as follows: Decide it would be cool to have a website that would
-                            let you
-                            scroll around a Google Maps satellite image to wherever you wanted, click a button, and have
-                            a
-                            trained ML algorithm perform semantic segmentation on all the buildings.
+                            let you scroll around a Google Maps satellite image to wherever you wanted, click a button,
+                            and have a trained ML algorithm perform semantic segmentation on all the buildings.
                         </li>
                         <li>Leaving the data wrangling, conversion, processing, augmentation, and formatting to another
-                            section,
-                            the pipeline is as follows:
+                            section, the pipeline is as follows:
                         </li>
                         <p></p>
                         <am class="row">
@@ -117,39 +114,33 @@
                             <at class="col-sm-8">
                                 <p>&nbsp</p>
                                 <p>&nbsp</p>
-                                <li>User loads the initial homepage www.PeterScottMiller.com, and sends a dummy
-                                    satellite image
-                                    to wake up the Google Cloud Run instance.
+                                <li>User is presented with a static pre-API called Google Maps JavaScript window.
                                 </li>
-                                <li>User activates the Google Maps JavaScript window, and is assigned a unique,
-                                    impermanent Firebase userID.
+                                <li>User activates the Google Maps JavaScript window, and is
+                                    assigned a unique (based on browser identity), impermanent Firebase userID.
                                 </li>
                                 <li>Firebase authenticates Google API key, activates window.</li>
                                 <li>User scrolls around, zooms in, out, decides they've found a spot.</li>
-                                <li>map object is constantly listening and resstablishing the center, zoom, and
-                                    bounds
-                                    shown
-                                    on the JavaScript map object.
+                                <li>During the above step, the map object is constantly listening and resstablishing
+                                    the center, zoom, and bounds of the JavaScript map object.
                                 </li>
                                 <li>User presses on the "Run Building Identification on current Map View!" button.
                                 </li>
-                                <li>A count var is incremented.</li>
-                                <li>Bounds are saved, above-mentioned button is hidden.</li>
-                                <li>Using the earlier saved center and zoom values, a call to Google Static Maps API
-                                    is
-                                    made.
+                                <li>A counter (initially set to zero) is incremented.</li>
+                                <li>Bounds are saved, ML serving button is hidden.</li>
+                                <li>Using the earlier established center and zoom values, a call to Google Static Maps
+                                    API
+                                    is made.
                                 </li>
                                 <li>Pull the impermanent, unique userID value and create a firebase.storage()
                                     identifier.
                                 </li>
-                                <li>Fetch, and put, the Static Map image into the 'satellite_screenshots' folder,
-                                    with
-                                    the userID & count variables appended.
+                                <li>Fetch the Static Map image from Google Static Maps API, and send to the
+                                    'satellite_screenshots' folder within a Google Cloud Storage bucket,
+                                    with the userID & count variables appended.
                                 </li>
                                 <li>Create user-feedback data to let them know that the static image has been
-                                    retrieved,
-                                    and
-                                    sent to the ML processing container.
+                                    retrieved, and sent to the ML processing container.
                                 </li>
                             </at>
                             <atl class="col-sm-3">
@@ -160,12 +151,32 @@
                                 <p>&nbsp</p>
                                 <li>First we have to let the Cloud Run instance that there's a reason for it to spin up,
                                     specifically, that a file has been selected by the User, and that it should pull
-                                    that image
-                                    and identify as many buildings as it can on it.
+                                    that image and identify as many buildings as it can on it.
                                 </li>
-                                <li>This is achieved by having a Google Cloud PubSub topic which is monitored and setup
-                                    to send notification to the Cloud Run instance.
+                                <li>This is achieved by having a pubsub topic subscritipn setup to monitor the
+                                    satellite_screenshots folder for either of two status updates:
+                                    OBJECT_FINALIZE or OBJECT_METADATA_UPDATE.
                                 </li>
+                                <li>When either of those status updates occur, a Push notification is sent to
+                                    the subscriber, which in this case is the cloud-run instance containing the
+                                    Dockerized Detectron2 model, with post-transfer learning weights for
+                                    building identification.
+                                </li>
+                                <li>The cloud-run instance has an API setup to respond to a JSON POST, which then pulls
+                                    the satellite-image from the satellite_screenshots folder, processes it, runs
+                                    prediction
+                                    on it, creates a temporary file, stores the predicted image in the temporary file,
+                                    then sends the temporary file to the predetermined processed_images folder in the
+                                    Google Cloud Storage bucket.
+                                </li>
+                            </at>
+                            <atl class="col-sm-3">
+                                <li>Third Stage: Display the processed image on the dynamic Google Maps window:</li>
+                            </atl>
+                            <at class="col-sm-8">
+                                <p>&nbsp</p>
+                                <p>&nbsp</p>
+                                <li></li>
                             </at>
                         </am>
                     </am>
