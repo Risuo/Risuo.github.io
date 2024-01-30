@@ -104,7 +104,7 @@
                             and have a trained ML algorithm perform semantic segmentation on all the buildings.
                         </li>
                         <li>Leaving the data wrangling, conversion, processing, augmentation, and formatting to another
-                            section, the pipeline is as follows:
+                            section, the website pipeline is as follows:
                         </li>
                         <p></p>
                         <am class="row">
@@ -176,7 +176,26 @@
                             <at class="col-sm-8">
                                 <p>&nbsp</p>
                                 <p>&nbsp</p>
-                                <li></li>
+                                <li>Immediately after the ML processing button as been pressed, the website begins
+                                    attempting to load the processed image. It performs repeated firebase storage GET
+                                requests, using the predetermined naming convention. </li>
+                                <li>Simultaneously, the website monitors the request to pull the static image, and once
+                                it has been successfully retrieved, updates the user-facing data.
+                                </li>
+                                <li>This user-facing data checks whether the counter variable is 1, in which case it is
+                                the first the user has made a request (after loading the map instance once) and it may
+                                require additional lead time (due to the required spinning up of a cloud-run compute instance.</li>
+                                <li>After and concurrent to that update, (which is slightly different for iterations 2-onward),
+                                the website is continuing to attempt to retrieve the processed image from the predefined bucket
+                                location.</li>
+                                <li>Once it is successfully retrieved, we identify the processed image as a Google Maps
+                                 Ground Overlay object, to be placed on the dynamic JavaScript Maps image, using the earlier
+                                defined bounds information identified when pressing the ML processing button.</li>
+                                <li>This is why the button has to be made invisible until the processing is complete, otherwise
+                                the user might begin a second processing, which would overwrite the initial bounds data,
+                                sending the initial processed image to where the subsequent proccessed image should be.</li>
+                                <li>Once the new image is overlaid on the dynamic JavaScript Maps image, the ML processing
+                                button is unhidden, and the user can perform an additional request if they so choose.</li>
                             </at>
                         </am>
                     </am>
