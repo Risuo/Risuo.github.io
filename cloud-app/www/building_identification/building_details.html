@@ -29,9 +29,6 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
                 </li>
-                <!--<li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>-->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
@@ -51,26 +48,16 @@
                         </li>
                     </ul>
                 </li>
-                <!--
-                <li class="nav-item">
-                    <a class="nav-link disabled">Disabled</a>
-                </li>
-                -->
             </ul>
-            <!--
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-            -->
         </div>
     </div>
 </nav>
 <!-- bs4 css-->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
 
-<!-- main css -->
-<link rel="stylesheet" href="./homepage/css/main.css">
+<!-- main css-->
+<link rel="stylesheet" href="css/building_identification.css">
+
 <div class="container-xl my-md-4">
     <div class="portfolio">
 
@@ -79,7 +66,7 @@
             <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    From the beginning.
+                    Data wrangling, conversion, processing, augmentation, and formatting
                 </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
@@ -107,102 +94,140 @@
                             section, the website pipeline is as follows:
                         </li>
                         <p></p>
-                        <am class="row">
-                            <atl class="col-sm-3">
-                                <li>First Stage: Create the static satellite image & send to the storage bucket:</li>
-                            </atl>
-                            <at class="col-sm-8">
-                                <p>&nbsp</p>
-                                <p>&nbsp</p>
-                                <li>User is presented with a static pre-API called Google Maps JavaScript window.
-                                </li>
-                                <li>User activates the Google Maps JavaScript window, and is
-                                    assigned a unique (based on browser identity), impermanent Firebase userID.
-                                </li>
-                                <li>Firebase authenticates Google API key, activates window.</li>
-                                <li>User scrolls around, zooms in, out, decides they've found a spot.</li>
-                                <li>During the above step, the map object is constantly listening and resstablishing
-                                    the center, zoom, and bounds of the JavaScript map object.
-                                </li>
-                                <li>User presses on the "Run Building Identification on current Map View!" button.
-                                </li>
-                                <li>A counter (initially set to zero) is incremented.</li>
-                                <li>Bounds are saved, ML serving button is hidden.</li>
-                                <li>Using the earlier established center and zoom values, a call to Google Static Maps
-                                    API
-                                    is made.
-                                </li>
-                                <li>Pull the impermanent, unique userID value and create a firebase.storage()
-                                    identifier.
-                                </li>
-                                <li>Fetch the Static Map image from Google Static Maps API, and send to the
-                                    'satellite_screenshots' folder within a Google Cloud Storage bucket,
-                                    with the userID & count variables appended.
-                                </li>
-                                <li>Create user-feedback data to let them know that the static image has been
-                                    retrieved, and sent to the ML processing container.
-                                </li>
-                            </at>
-                            <atl class="col-sm-3">
-                                <li>Second Stage: Run the ML on the image:</li>
-                            </atl>
-                            <at class="col-sm-8">
-                                <p>&nbsp</p>
-                                <p>&nbsp</p>
-                                <li>First we have to let the Cloud Run instance that there's a reason for it to spin up,
-                                    specifically, that a file has been selected by the User, and that it should pull
-                                    that image and identify as many buildings as it can on it.
-                                </li>
-                                <li>This is achieved by having a pubsub topic subscritipn setup to monitor the
-                                    satellite_screenshots folder for either of two status updates:
-                                    OBJECT_FINALIZE or OBJECT_METADATA_UPDATE.
-                                </li>
-                                <li>When either of those status updates occur, a Push notification is sent to
-                                    the subscriber, which in this case is the cloud-run instance containing the
-                                    Dockerized Detectron2 model, with post-transfer learning weights for
-                                    building identification.
-                                </li>
-                                <li>The cloud-run instance has an API setup to respond to a JSON POST, which then pulls
-                                    the satellite-image from the satellite_screenshots folder, processes it, runs
-                                    prediction
-                                    on it, creates a temporary file, stores the predicted image in the temporary file,
-                                    then sends the temporary file to the predetermined processed_images folder in the
-                                    Google Cloud Storage bucket.
-                                </li>
-                            </at>
-                            <atl class="col-sm-3">
-                                <li>Third Stage: Display the processed image on the dynamic Google Maps window:</li>
-                            </atl>
-                            <at class="col-sm-8">
-                                <p>&nbsp</p>
-                                <p>&nbsp</p>
-                                <li>Immediately after the ML processing button as been pressed, the website begins
-                                    attempting to load the processed image. It performs repeated firebase storage GET
-                                requests, using the predetermined naming convention. </li>
-                                <li>Simultaneously, the website monitors the request to pull the static image, and once
-                                it has been successfully retrieved, updates the user-facing data.
-                                </li>
-                                <li>This user-facing data checks whether the counter variable is 1, in which case it is
-                                the first the user has made a request (after loading the map instance once) and it may
-                                require additional lead time (due to the required spinning up of a cloud-run compute instance.</li>
-                                <li>After and concurrent to that update, (which is slightly different for iterations 2-onward),
-                                the website is continuing to attempt to retrieve the processed image from the predefined bucket
-                                location.</li>
-                                <li>Once it is successfully retrieved, we identify the processed image as a Google Maps
-                                 Ground Overlay object, to be placed on the dynamic JavaScript Maps image, using the earlier
-                                defined bounds information identified when pressing the ML processing button.</li>
-                                <li>This is why the button has to be made invisible until the processing is complete, otherwise
-                                the user might begin a second processing, which would overwrite the initial bounds data,
-                                sending the initial processed image to where the subsequent proccessed image should be.</li>
-                                <li>Once the new image is overlaid on the dynamic JavaScript Maps image, the ML processing
-                                button is unhidden, and the user can perform an additional request if they so choose.</li>
-                            </at>
-                        </am>
                     </am>
-
                 </div>
             </div>
-
         </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Website Pipeline Breakdown
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <am class="row">
+                        <atl class="col-sm-2">
+                            <li>First Stage: Create the static satellite image & send to the storage bucket:</li>
+                        </atl>
+                        <at class="col-sm-10">
+                            <p>&nbsp</p>
+                            <p>&nbsp</p>
+                            <li>User is presented with a static pre-API-call Google Maps JavaScript window.</li>
+                            <li>User activates the Google Maps JavaScript window, and is
+                                assigned a unique (based on browser identity), impermanent Firebase userID.
+                                <p></p>
+                                <img src="images/details/function appendMap().PNG" alt="appendMap()">
+                                <p></p>
+                            </li>
+                            <li>Firebase authenticates Google API key, activates window, initializes a count variable to
+                                zero.
+                                <p></p>
+                                <img src="images/details/initialize()%20firebase%20reset,%20signin,%20count.PNG"
+                                     alt="initialize()">
+                                <p></p>
+                            </li>
+                            <li>User scrolls around, zooms in, out, decides they've found a spot.</li>
+                            <li>During the above step, the map object is constantly listening and resstablishing
+                                the center, zoom, and bounds of the JavaScript map object.
+                                <p></p>
+                                <img src="images/details/getMapBoundsEtc.PNG" alt="getBounds">
+                                <p></p>
+                            </li>
+                            <li>User presses on the "Run Building Identification on current Map View!" button.</li>
+                            <li>The counter is incremented, bounds are split into north, south, east, and west corners,
+                                ML serving button is hidden.
+                                <p></p>
+                                <img src="images/details/convert%20bounds,%20increment,%20show%20feedback.PNG"
+                                     alt="cardinals & feedback">
+                                <p></p>
+                            </li>
+                            <li>Using the earlier established center and zoom values, make a call to Google Static Maps
+                                API.
+                                <p></p>
+
+                            </li>
+                            <li>Pull the impermanent, unique userID value and create a firebase.storage()
+                                identifier.
+                            </li>
+                            <li>Fetch the Static Map image from Google Static Maps API, and send to the
+                                'satellite_screenshots' folder within a Google Cloud Storage bucket,
+                                with the userID & count variables appended.
+                            </li>
+                            <li>Create user-feedback data to let them know that the static image has been
+                                retrieved, and sent to the ML processing container.
+                            </li>
+                        </at>
+                        <atl class="col-sm-3">
+                            <li>Second Stage: Run the ML on the image:</li>
+                        </atl>
+                        <at class="col-sm-8">
+                            <p>&nbsp</p>
+                            <p>&nbsp</p>
+                            <li>First we have to let the Cloud Run instance that there's a reason for it to spin up,
+                                specifically, that a file has been selected by the User, and that it should pull
+                                that image and identify as many buildings as it can on it.
+                            </li>
+                            <li>This is achieved by having a pubsub topic subscritipn setup to monitor the
+                                satellite_screenshots folder for either of two status updates:
+                                OBJECT_FINALIZE or OBJECT_METADATA_UPDATE.
+                            </li>
+                            <li>When either of those status updates occur, a Push notification is sent to
+                                the subscriber, which in this case is the cloud-run instance containing the
+                                Dockerized Detectron2 model, with post-transfer learning weights for
+                                building identification.
+                            </li>
+                            <li>The cloud-run instance has an API setup to respond to a JSON POST, which then pulls
+                                the satellite-image from the satellite_screenshots folder, processes it, runs
+                                prediction
+                                on it, creates a temporary file, stores the predicted image in the temporary file,
+                                then sends the temporary file to the predetermined processed_images folder in the
+                                Google Cloud Storage bucket.
+                            </li>
+                        </at>
+                        <atl class="col-sm-3">
+                            <li>Third Stage: Display the processed image on the dynamic Google Maps window:</li>
+                        </atl>
+                        <at class="col-sm-8">
+                            <p>&nbsp</p>
+                            <p>&nbsp</p>
+                            <li>Immediately after the ML processing button as been pressed, the website begins
+                                attempting to load the processed image. It performs repeated firebase storage GET
+                                requests, using the predetermined naming convention.
+                            </li>
+                            <li>Simultaneously, the website monitors the request to pull the static image, and once
+                                it has been successfully retrieved, updates the user-facing data.
+                            </li>
+                            <li>This user-facing data checks whether the counter variable is 1, in which case it is
+                                the first the user has made a request (after loading the map instance once) and it
+                                may require additional lead time (due to the required spinning up of a cloud-run
+                                compute instance.
+                            </li>
+                            <li>After and concurrent to that update, (which is slightly different for iterations
+                                2-onward), the website is continuing to attempt to retrieve the processed image from
+                                the predefined bucket location.
+                            </li>
+                            <li>Once it is successfully retrieved, we identify the processed image as a Google Maps
+                                Ground Overlay object, to be placed on the dynamic JavaScript Maps image, using the
+                                earlier defined bounds information identified when pressing the ML processing
+                                button.
+                            </li>
+                            <li>This is why the button has to be made invisible until the processing is complete,
+                                otherwise the user might begin a second processing, which would overwrite the
+                                initial bounds data, sending the initial processed image to where the subsequent
+                                proccessed image should be.
+                            </li>
+                            <li>Once the new image is overlaid on the dynamic JavaScript Maps image, the ML
+                                processing button is unhidden, and the user can perform an additional request if
+                                they so choose.
+                            </li>
+                        </at>
+                    </am>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>

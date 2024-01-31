@@ -10,18 +10,19 @@ var image;
 var predictionOverlay;
 var predictionBounds;
 var count;
+var apiKey = "AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI";
+
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 var firebaseConfig = {
-    apiKey: "AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI",
+    apiKey: apiKey,
     authDomain: "sketcher-app-test-engine.firebaseapp.com",
     projectId: "sketcher-app-test-engine",
     storageBucket: "sketcher-app-test-engine.appspot.com",
     messagingSenderId: "987456894174",
     appId: "1:987456894174:web:254008b41a47334a207e4f",
     measurementId: "G-XSHW4JDZQ4"
-
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -30,8 +31,6 @@ firebase.initializeApp(firebaseConfig);
 // This appears to reduce lag-time between selection & display availability for the first selection
 // from ~25seconds down to ~8-12seconds
 //console.log('Provisioning Cloud Run Instance')
-
-
 // static_Img = document.createElement('img');
 // static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + "38.534531215, -77.034331215" + '&zoom=' + "19" + '&maptype=satellite' + '&scale=1' + '&size=100x100' +
 //     '&format=png32' + '&key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places';
@@ -61,15 +60,55 @@ function appendScript(url, callback) {
             callback();
         };
     }
-
     script.src = url;
     document.getElementsByTagName("head")[0].appendChild(script);
 }
 
 
+const msg1 = "> Welcome!";
+const msg2 = "> This is an interactive Detectron2 driven Building Identification project."
+const msg3 = "> You can either input an address above, or click and drag below."
+const msg4 = "> If you are the first user in a while, there will be a slight (~30 seconds) "
+const msg5 = "  Cold-Start delay to your first request."
+const msg6 = "> Subsequent requests should generally be on the order of 10 seconds."
+const msg7 = "> "
+const msg8 = "> Enjoy, and thank you for visiting! - Peter Scott Miller."
+
+const introduction = [msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8];
+
+const cancelIntroduction = {cancelled: false};
+
+function characterPrint(messageArray, cancelThisMessage, timing) { // (array of strings, boolean, integer)
+    (async () => {
+        for (const line in messageArray) {
+            for (const character in messageArray[line]) {
+                console.log(messageArray[line][character]);
+                await new Promise(res => setTimeout(res, timing));
+                if (cancelThisMessage.cancelled) break;
+            }
+            console.log("<br/>");
+            if (cancelThisMessage.cancelled) break;
+        }
+    })();
+}
+
 function appendMap() {
-    appendScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places", function () {
+    appendScript("https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&v=3.exp&libraries=places", function () {
         $("#activate-map").css("display", "none");
+        characterPrint(introduction, cancelIntroduction, 40);
+        // (async () => {
+        //     for (message in messages) {
+        //         // console.log(messages[message])
+        //         for (letter in messages[message]) {
+        //             console.log(messages[message][letter]);
+        //             await new Promise(res => setTimeout(res, 50));
+        //             if (cancelIntroduction) break;
+        //         }
+        //         console.log("<br/>");
+        //         if (cancelIntroduction) break;
+        //     }
+        //
+        // })();
         initialize();
         btnMLBegin.classList.remove('hide');
     });
@@ -77,15 +116,12 @@ function appendMap() {
 
 
 function initialize() {
-
     firebase.auth().signOut()
     firebase.auth().signInAnonymously(); // Sets a UID upon appendMap (activate-map button click)
-
     let count = 0;
 
 
     var latlng = new google.maps.LatLng(39.037278, -77.179171);
-
     var myOptions = {
         zoom: 19,
         loading: 'async',
@@ -148,7 +184,6 @@ function initialize() {
         infowindow.open(marker);
     });
 
-    bounds = map.getBounds();
     //map.addListener("mousemove", (event) => {
     //coordsDiv.textContent =
     //"Center: " +
@@ -164,6 +199,8 @@ function initialize() {
     //"lng: " +
     //(event.latLng.lng());
     //});
+
+    bounds = map.getBounds();
     map.addListener("click", (event) => {
         centerUrl = map.getCenter().toUrlValue();
         mapZoom = map.getZoom();
@@ -197,16 +234,22 @@ function initialize() {
 
     const btnMLBegin = document.getElementById('btnMLBegin')
 
-// Click button to grab static image & display based on variables on dynamic map & upload to Firebase storage & retrieve URL for static map
+    // Click button to grab static image & display based on variables on dynamic map & upload to Firebase storage & retrieve URL for static map
 
     btnMLBegin.addEventListener('click', e => {
-        count++;
+
+        cancelIntroduction.cancelled = true;
+
         //console.log(count)
         //console.log("Center coordinates: ");
         //console.log(centerUrl)
         //console.log("<br /> Map Zoom:")
         //console.log(mapZoom)
         //console.log("<br />")
+        //btnMLShow.classList.remove('hide');
+        //btnMLShow.classList.add('hide');
+
+        count++;
         predictionBounds = {
             north: bounds.getNorthEast().lat(),
             south: bounds.getSouthWest().lat(),
@@ -214,8 +257,6 @@ function initialize() {
             west: bounds.getSouthWest().lng()
         };
 
-        //btnMLShow.classList.remove('hide');
-        //btnMLShow.classList.add('hide');
         clear_logs();
         btnMLBegin.classList.add('hide');
 
@@ -223,17 +264,14 @@ function initialize() {
         log_card_2.classList.add('hide')
         log_2.classList.add('hide');
 
-        log_container.classList.remove('hide')
-        log_card.classList.remove('hide')
-        log.classList.remove('hide');
 
         //console.log('Bounds of Viewport = Bounds of Static Img:', predictionBounds)
         static_Img = document.createElement('img');
-        static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + centerUrl + '&zoom=' + mapZoom + '&maptype=satellite' + '&scale=2' + '&size=640x640' +
-            '&format=png32' + '&key=AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI&v=3.exp&libraries=places&loading=async';
-        //document.getElementById('staticGrabSpot').appendChild(static_Img);
+        static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + centerUrl + '&zoom='
+            + mapZoom + '&maptype=satellite' + '&scale=2' + '&size=640x640' +
+            '&format=png32' + '&key=' + apiKey + '&v=3.exp&libraries=places&loading=async';
         var static_Url = static_Img.src;
-        console.log("> Static Image " + count + " identified. <br /> > Center coordinates: " + centerUrl + ".<br /> " +
+        console.log("<br/><br/>> Static Image " + count + " identified. <br /> > Center coordinates: " + centerUrl + ".<br /> " +
             "> Zoom Level: " + mapZoom + ".<br /> > Transferring image to ML processing container. <br />> ")
         //console.log('static_Img URL:', static_Url)
         var uid = firebase.auth().currentUser.uid;
@@ -245,15 +283,17 @@ function initialize() {
         }).then(blob => {
             filename_store.put(blob)
 
-                .then(function (snapshot) { // actually, might be able to remove after the put(blob) bit.
-                    return snapshot.ref.getDownloadURL()
-                }).then(url => { // This and the next 2 lines, starting at .then ending with }) can be removed once debugging is done
-                if (count === 1) {
-                    console.log("<br />> Possible cold-start mode detected. Additional time for processing may be required. Subsequent requests will (generally) be quicker. See details page for more information.")
-                }
-                console.log("<br />> Image received by ML processing container.<br />> Beginning ML Processing.<br />> ");
+                // .then(function (snapshot) { // actually, might be able to remove after the put(blob) bit.
+                //     return snapshot.ref.getDownloadURL()
+                // })
+                .then(url => { // This and the next 2 lines, starting at .then ending with }) can be removed once debugging is done
+                    if (count === 1) {
+                        console.log("<br />> Possible cold-start mode detected. Additional time for processing may be " +
+                            "required. Subsequent requests will (generally) be quicker. See details page for more information.")
+                    }
+                    console.log("<br />> Image received by ML processing container.<br />> Beginning ML Processing.<br />> ");
 
-            })
+                })
 
         }).catch(error => {
             console.error(error);
@@ -293,11 +333,12 @@ function initialize() {
                 clearInterval(tid)
                 if (count === 1) {
                     setTimeout(() => {
-                        console.log("<br /> > Best results tend to be in clearer (less tree-cover) higher-resolution areas (satellite imagery sources are not of uniform quality).");
+                        console.log("<br /> > Best results tend to be in clearer (less tree-cover) higher-resolution " +
+                            "areas (satellite imagery sources are not of uniform quality).");
                     }, 200);
                 }
                 setTimeout(() => {
-                    console.log("<br /> > Predicted Image displayed below. ");
+                    console.log("<br /> > Predicted Image displayed below. <br /><br />");
                 }, 400);
                 // setTimeout(() => {
                 //     console.log("<br /> > For a pre-selected 'high performance' result, click 'Pre-selected' below.");
@@ -319,6 +360,7 @@ function initialize() {
 
                 setTimeout(() => {
                     btnMLBegin.classList.remove('hide');
+
                 }, 1000);
                 //log.classList.add('hide');
                 //log_container.classList.add('hide');
@@ -339,7 +381,7 @@ function initialize() {
 }
 
 function clear_logs() {
-    $('#log').empty()
+    //$('#log').empty()
     $('#log_2').empty()
 }
 
@@ -347,7 +389,7 @@ function clear_logs() {
     if (!console) {
         console = {};
     }
-    var old = console.log;
+    // var old = console.log;
     var logger = document.getElementById('log');
     var box = document.getElementById('log_container');
     console.log = function (message) {
@@ -356,7 +398,6 @@ function clear_logs() {
         } else {
             logger.innerHTML += message; // + '<br />';
             box.scrollTop = box.scrollHeight;
-
         }
     }
 })();
@@ -365,27 +406,18 @@ function clear_logs() {
 //showPrediction.addEventListener('click', e => {
 //var uid = firebase.auth().currentUser.uid;
 //console.log("Click registered")
-
 //predicted_Img = document.createElement('img');
-
 //predicted_Img.src = 'https://storage.cloud.google.com/sketcher-app-test-engine.appspot.com/satelite_screenshots/' + uid + '_test_out_' + count + '.png'
-
 //document.getElementById('staticGrabSpot').appendChild(predicted_Img);
-
 //});
-
 //toggleDOMButton.addEventListener('click', e => {
 //    var uid = firebase.auth().currentUser.uid;
 //    map.setTilt(0);
 //    console.log("Click registered on toggleDom Btn")
-
-
 //    predicted_Img = document.createElement('img');
-
 //    var storage = firebase.storage();
 //    var predicted_Img_Path = storage.refFromURL('gs://sketcher-app-test-engine.appspot.com/satelite_screenshots/' + uid + '_test_out_' + count + '.png')
 //    console.log(predicted_Img_Path)
-
 //    predicted_Img_Path.getDownloadURL()
 //        .then((url) => {
 //            predicted_Img.src = url
@@ -398,8 +430,6 @@ function clear_logs() {
 //predicted_Img.src = 'https://storage.cloud.google.com/sketcher-app-test-engine.appspot.com/satelite_screenshots/' + uid + '_test_out_' + count + '.png'
 //document.getElementById('staticGrabSpot').appendChild(predicted_Img);
 //});
-
-
 //const btnLogin = document.getElementById('btnLogin');
 //const btnLogout = document.getElementById('btnLogout');
 //const btnUpload = document.getElementById('fileButton');
@@ -407,60 +437,57 @@ function clear_logs() {
 //const showPrediction = document.getElementById('showPrediction')
 //const toggleDOM = document.getElementById('toggleDOM')
 
-/*
 // Click login event listener
-btnLogin.addEventListener('click', e => {
-firebase.auth().signInAnonymously();
-});
-
+// btnLogin.addEventListener('click', e => {
+// firebase.auth().signInAnonymously();
+// });
 // Click logout event listener
-btnLogout.addEventListener('click', e => {
-firebase.auth().currentUser.delete();
-});
+// btnLogout.addEventListener('click', e => {
+// firebase.auth().currentUser.delete();
+// });
+// firebase.auth().onAuthStateChanged(firebaseUser => {
+//   if(firebaseUser) {
+//     var uid = firebaseUser.uid;
+//     console.log(uid);
+//     btnLogout.classList.remove('hide');
+//btnUpload.classList.remove('hide');
+//uploader.classList.remove('hide');
+// } else {
+//   btnLogout.classList.add('hide');
+//btnUpload.classList.add('hide');
+//uploader.classList.add('hide');
+//   }
+// });
 
-firebase.auth().onAuthStateChanged(firebaseUser => {
-  if(firebaseUser) {
-    var uid = firebaseUser.uid;
-    console.log(uid);
-    btnLogout.classList.remove('hide');
-    //btnUpload.classList.remove('hide');
-    //uploader.classList.remove('hide');
-  } else {
-    btnLogout.classList.add('hide');
-    //btnUpload.classList.add('hide');
-    //uploader.classList.add('hide');
-  }
-});
-
-//Code for manually uploading
-const fileButton = document.getElementById('fileButton');
-// Listen for file selection
-fileButton.addEventListener('change', function(e) {
-  // Get file
-  // Create a storage ref
-  var file = e.target.files[0];
-  var uid = firebase.auth().currentUser.uid;
-  var storageRef = firebase.storage().ref('satelite_screenshots/' + uid);
-  //var storageRef = firebase.storage().ref('satelite_screenshots/' + uid + get_url_extension(file.name));
-  // Upload file
-  var task = storageRef.put(file);
-  // Update progress bar
-  task.on('state_changed',
-    function progress(snapshot){
-      var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      uploader.value = percentage;
-    },
-    function error(err) {
-    },
-    function complete() {
-      storageRef.getDownloadURL().then(function(url) {
-          var test = url;
-          document.querySelector('img').src = test;
-      }).catch(function(error) {
-      });
-    }
-  );
-});*/
+// // Code for manually uploading
+// const fileButton = document.getElementById('fileButton');
+// // Listen for file selection
+// fileButton.addEventListener('change', function(e) {
+// // Get file
+// // Create a storage ref
+//   var file = e.target.files[0];
+//   var uid = firebase.auth().currentUser.uid;
+//   var storageRef = firebase.storage().ref('satelite_screenshots/' + uid);
+//   //var storageRef = firebase.storage().ref('satelite_screenshots/' + uid + get_url_extension(file.name));
+//   // Upload file
+//   var task = storageRef.put(file);
+//   // Update progress bar
+//   task.on('state_changed',
+//     function progress(snapshot){
+//       var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//       uploader.value = percentage;
+//     },
+//     function error(err) {
+//     },
+//     function complete() {
+//       storageRef.getDownloadURL().then(function(url) {
+//           var test = url;
+//           document.querySelector('img').src = test;
+//       }).catch(function(error) {
+//       });
+//     }
+//   );
+// });
 
 
 

@@ -1,9 +1,9 @@
 ::-webkit-scrollbar {
-  width: 5px;
+    width: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: white;
+    background: white;
 }
 
 html {
@@ -22,7 +22,7 @@ body {
 }
 
 .hide {
-  display:none;
+    display: none;
 }
 
 #uploader {
@@ -37,7 +37,7 @@ body {
     position: absolute;
     width: 640px;
     height: 640px;
-    margin: 15px 15px 15px 15px ;
+    margin: 15px 15px 15px 15px;
 
 }
 
@@ -47,8 +47,9 @@ body {
     background-size: cover;
     width: calc(100%);
 }
+
 #activate-map-btn {
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     height: 100%;
     width: 100%;
     display: -webkit-box;
@@ -59,6 +60,7 @@ body {
     align-items: center;
     justify-content: center;
 }
+
 #activate-map-btn button {
     background: transparent;
     border: 4px solid #fff;
@@ -68,6 +70,11 @@ body {
     font-weight: bold;
     letter-spacing: 0.5px;
 }
+
+div img {
+    max-width: 100%;
+}
+
 #map_canvas_container {
     position: relative;
     width: 670px;
@@ -92,27 +99,27 @@ body {
 }
 
 
-
 #coords {
-  background-color: black;
-  color: white;
-  /*padding: 10px;*/
+    background-color: black;
+    color: white;
+    /*padding: 10px;*/
 }
 
 .custom-map-control-button {
-  background-color: #fff;
-  border: 0;
-  border-radius: 2px;
-  box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
-  margin: 10px;
-  padding: 0 0.5em;
-  font: 400 18px Roboto, Arial, sans-serif;
-  overflow: hidden;
-  height: 40px;
-  cursor: pointer;
+    background-color: #fff;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    padding: 0 0.5em;
+    font: 400 18px Roboto, Arial, sans-serif;
+    overflow: hidden;
+    height: 40px;
+    cursor: pointer;
 }
+
 .custom-map-control-button:hover {
-  background: #ebebeb;
+    background: #ebebeb;
 }
 
 .pac-card {
@@ -130,18 +137,18 @@ body {
 }
 
 #pac-container {
-  margin-left: 5px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  margin-right: 5px;
+    margin-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-right: 5px;
 }
 
 #pac-input {
-  background-color: #fff;
-  font-weight: 300;
-  padding: 0 13px 0 13px;
-  text-overflow: ellipsis;
-  width: 95%;
+    background-color: #fff;
+    font-weight: 300;
+    padding: 0 13px 0 13px;
+    text-overflow: ellipsis;
+    width: 95%;
 }
 
 .container {
@@ -172,17 +179,13 @@ body {
     margin-top: 5px;
     margin-right: auto;
     margin-left: auto;
-
-
 }
 
-
-
 #log_container_2 {
-  margin-left: 5px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  margin-right: 5px;
+    margin-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-right: 5px;
 }
 
 .log_card_2 {
@@ -203,7 +206,6 @@ body {
 }
 
 
-
 #btnMLBegin {
     margin-left: auto;
     margin-right: auto;
@@ -215,3 +217,18 @@ body {
     margin-right: auto;
     margin-top: 15px;
 }
+
+/*#zoom_card {*/
+/*    padding: 5px 2px 5px 2px;*/
+/*    border-radius: 2px 0 0 2px;*/
+/*    box-sizing: border-box;*/
+/*    outline: none;*/
+/*    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);*/
+/*    font-family: 'Courier Prime', monospace;*/
+/*    background-color: black;*/
+/*    color: cyan;*/
+/*}*/
+
+/*#zoom_container {*/
+
+/*}*/
