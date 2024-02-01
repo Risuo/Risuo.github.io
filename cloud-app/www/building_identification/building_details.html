@@ -113,6 +113,9 @@
                 <div class="accordion-body">
                     <am class="row">
                         <atl class="col-sm-2">
+                            <strong>
+                                <li>This section pertains to the Cloud App portion of the website.</li>
+                            </strong>
                             <li>First Stage: Create the static satellite image & send to the storage bucket:</li>
                         </atl>
                         <at class="col-sm-10">
@@ -147,85 +150,203 @@
                                      alt="cardinals & feedback">
                                 <p></p>
                             </li>
-                            <li>Using the earlier established center and zoom values, make a call to Google Static Maps
-                                API.
+                            <li>Using the earlier established center and zoom values, create a string to be used in the
+                                next asynchronous function.
                                 <p></p>
-
+                                <img src="images/details/staticImageAddress.PNG"
+                                     alt="pull static image">
+                                <p></p>
                             </li>
-                            <li>Pull the impermanent, unique userID value and create a firebase.storage()
-                                identifier.
+                            <li>Using the impermanent userID from firebase, establish the firebase.storage() location
+                                that the static image is going to be sent to.
+                                <p></p>
+                                <img src="images/details/async-1.PNG"
+                                     alt="async step 1">
+                                <p></p>
                             </li>
-                            <li>Fetch the Static Map image from Google Static Maps API, and send to the
-                                'satellite_screenshots' folder within a Google Cloud Storage bucket,
-                                with the userID & count variables appended.
+                            <li>Fetch the Static Map image from Google Static Maps API, once received, send to the
+                                'satellite_screenshots' folder within the Google Cloud Storage bucket,
+                                appending the userID & count variables (as described in the preceeding step).
+                                <p></p>
+                                <img src="images/details/async-2.PNG"
+                                     alt="async step 2">
+                                <p></p>
                             </li>
-                            <li>Create user-feedback data to let them know that the static image has been
-                                retrieved, and sent to the ML processing container.
+                            <li>Meanwhile, the above steps are wrapped in an asynchronous function, which performs the
+                                following process:
+                                <ul>Begin an asynchronous function to fetch and store the static image.</ul>
+                                <ul>Simultaneously, begin the first asyncCharacterPrint function, which provides
+                                    user-feedback data to let them know that the static image has been
+                                    retrieved, and sent to the ML processing container.
+                                </ul>
+                                <ul>Wait for receipt of two promises, one for the completion of the static image pull,
+                                    and the second for the completion of the asyncCharacterPrint.
+                                </ul>
+                                <ul>Once both promises are received, begin the second asyncCharacterPrint call,
+                                    indicating that the image has been received and MP processing has begun.
+                                </ul>
+                                <p></p>
+                                <img src="images/details/fullAsyncCall.PNG"
+                                     alt="full asyncCall">
+                                <p></p>
                             </li>
                         </at>
                         <atl class="col-sm-3">
+                            <strong>
+                                <li>This section pertains to the Cloud Run portion of the website.</li>
+                            </strong>
                             <li>Second Stage: Run the ML on the image:</li>
                         </atl>
                         <at class="col-sm-8">
                             <p>&nbsp</p>
                             <p>&nbsp</p>
-                            <li>First we have to let the Cloud Run instance that there's a reason for it to spin up,
-                                specifically, that a file has been selected by the User, and that it should pull
+                            <li>First we have to let the Cloud Run instance know that there's a reason for it to spin
+                                up, specifically, that a file has been selected by the User, and that it should pull
                                 that image and identify as many buildings as it can on it.
                             </li>
-                            <li>This is achieved by having a pubsub topic subscritipn setup to monitor the
+                            <li>This is achieved by having setup a pubsub topic subscrition to monitor the
                                 satellite_screenshots folder for either of two status updates:
                                 OBJECT_FINALIZE or OBJECT_METADATA_UPDATE.
                             </li>
                             <li>When either of those status updates occur, a Push notification is sent to
-                                the subscriber, which in this case is the cloud-run instance containing the
-                                Dockerized Detectron2 model, with post-transfer learning weights for
-                                building identification.
+                                the subscriber, which in this case is the service account associated with the cloud-run
+                                instance containing the Dockerized Detectron2 model, with post-transfer learning weights
+                                for building identification.
                             </li>
-                            <li>The cloud-run instance has an API setup to respond to a JSON POST, which then pulls
-                                the satellite-image from the satellite_screenshots folder, processes it, runs
-                                prediction
-                                on it, creates a temporary file, stores the predicted image in the temporary file,
-                                then sends the temporary file to the predetermined processed_images folder in the
-                                Google Cloud Storage bucket.
+                            <li>The cloud-run instance has an API setup to listen for a POST request, which is expecting
+                                a formatted JSON file which includes data relating to the satellite image.
+                            </li>
+                            <li>
+                                Using Flask, we start off by creating an envelope object formatting the data contained
+                                in the POST call and verify the contents of the envelope.
+                                <p></p>
+                                <img src="images/details/cloudRun-1.PNG"
+                                     alt="create envelope & verify contents">
+                                <p></p>
+                            </li>
+                            <li>
+                                Next the container extracts the bucket_path and file_path locations from the envelope,
+                                establishes the storage.Client() object, the bucket object, and the blob object.
+                                <p></p>
+                                <img src="images/details/cloudRun-2.PNG"
+                                     alt="establish necessary objects">
+                                <p></p>
+                            </li>
+                            <li>
+                                Next we link the file_name to the blob.name, and format it to allow for successfully
+                                using it again later. We then create two temporary files using mkstemp(), which
+                                creates a tuple in the form (int, path). We ignore the int portion.
+                                <p></p>
+                                <img src="images/details/cloudRun-3.PNG"
+                                     alt="create two temporary files">
+                                <p></p>
+                            </li>
+                            <li>
+                                Now we download the image into the first temporary file, open it, and convert it into a
+                                NumPy formatted array.
+                                <p></p>
+                                <img src="images/details/cloudRun-4.PNG"
+                                     alt="download the image & convert to NumPy array">
+                                <p></p>
+                            </li>
+                            <li>
+                                <ul>
+                                    Now we finally run the image through the pre-trained, specialized Detectron2
+                                    algorithm to get a collection of predictions (in the form of another NumPy array).
+                                </ul>
+                                <ul>
+                                    Next we use Detectron2 functions to create a Visualizer object, and scale the image
+                                    down to save on the user-download needs (improves interaction speed).
+                                </ul>
+                                <ul>
+                                    Then we draw the actual predictions (which are an array of instances, since this is
+                                    semantic segmentation) and crucially, do so via a CPU (but we could use a GPU
+                                    instead by redeploying this image on a Google Cloud Google Kubernetes Engine
+                                    Enterprise Anthos Cloud Run. This would increase costs by a factor of over 10).
+                                </ul>
+                                <p></p>
+                                <img src="images/details/cloudRun-5.PNG"
+                                     alt="run prediction on the image!">
+                                <p></p>
+                            </li>
+                            <li>
+                                <ul>
+                                    Now we grab the formatted image from that the cpu-drawn output.
+                                </ul>
+                                <ul>
+                                    Having created our prediction file name, we append .png to the second temporary file
+                                    from earlier. We take out predicted_img object, and convert it into an Image (since
+                                    right now it's still an array). We then save the Image into our second tempoary
+                                    file, and
+                                    identify it as png format.
+                                </ul>
+                                <ul>
+                                    Finally, we create a pointer to a location in our bucket expecting a new blob
+                                    object,
+                                    formatted using the prediction_name established earlier. Then we just upload our
+                                    second
+                                    temporary file (now an image file) into that identified location.
+                                </ul>
+                                <p></p>
+                                <img src="images/details/cloudRun-6.PNG"
+                                     alt="save the predicted image into the cloud">
+                                <p></p>
                             </li>
                         </at>
                         <atl class="col-sm-3">
+                            <strong>
+                                <li>This section pertains to the Cloud App portion of the website again.</li>
+                            </strong>
                             <li>Third Stage: Display the processed image on the dynamic Google Maps window:</li>
                         </atl>
                         <at class="col-sm-8">
                             <p>&nbsp</p>
                             <p>&nbsp</p>
                             <li>Immediately after the ML processing button as been pressed, the website begins
-                                attempting to load the processed image. It performs repeated firebase storage GET
-                                requests, using the predetermined naming convention.
+                                attempting to load the processed image. It does this every .5 seconds It performs
+                                repeated getDownloadURL() requests, using the predetermined naming convention.
+                                <p></p>
+                                <img src="images/details/cloudAppEnd-4.PNG"
+                                     alt="actual loop that pulls processed image">
+                                <p></p>
+                                <ul>
+                                    This get request uses the format we've just established in the Cloud Run file, but
+                                    at the start of the calls, this file doesn't exist yet. These have to be equal:
+                                    <p></p>
+                                    <img src="images/details/cloudAppEnd-1.PNG"
+                                         alt="this has to equal">
+                                    <p></p>
+                                    <p></p>
+                                    <img src="images/details/cloudAppEnd-2.PNG"
+                                         alt="this">
+                                    <p></p>
+                                    <p></p>
+                                    <img src="images/details/cloudAppEnd-3.PNG"
+                                         alt="AND this">
+                                    <p></p>
+                                </ul>
                             </li>
-                            <li>Simultaneously, the website monitors the request to pull the static image, and once
-                                it has been successfully retrieved, updates the user-facing data.
-                            </li>
-                            <li>This user-facing data checks whether the counter variable is 1, in which case it is
-                                the first the user has made a request (after loading the map instance once) and it
-                                may require additional lead time (due to the required spinning up of a cloud-run
-                                compute instance.
-                            </li>
-                            <li>After and concurrent to that update, (which is slightly different for iterations
-                                2-onward), the website is continuing to attempt to retrieve the processed image from
-                                the predefined bucket location.
-                            </li>
-                            <li>Once it is successfully retrieved, we identify the processed image as a Google Maps
-                                Ground Overlay object, to be placed on the dynamic JavaScript Maps image, using the
-                                earlier defined bounds information identified when pressing the ML processing
-                                button.
-                            </li>
-                            <li>This is why the button has to be made invisible until the processing is complete,
-                                otherwise the user might begin a second processing, which would overwrite the
-                                initial bounds data, sending the initial processed image to where the subsequent
-                                proccessed image should be.
-                            </li>
-                            <li>Once the new image is overlaid on the dynamic JavaScript Maps image, the ML
-                                processing button is unhidden, and the user can perform an additional request if
-                                they so choose.
-                            </li>
+                            <li>Once there is an affirmative response of this URL existing where we're looking (which
+                                means the image processing is completed and the processed image has been uploaded
+                                successfully into the Google Cloud Bucket) we:
+                                <ul>
+                                    Create a Ground Overlay object out of the predicted image, and place it on the
+                                    dynamic JavaScript Maps image, using the earlier defined bounds information saved
+                                    when pressing the Run Building Identification on Current Map View button.
+                                    <p></p>
+                                    <img src="images/details/cloudAppEnd-5.PNG"
+                                         alt="AND this">
+                                    <p></p>
+                                </ul>
+                                <ul>
+                                    Present some user-facing data, and re-enable the button.
+                                    <p></p>
+                                    <img src="images/details/cloudAppEnd-8.PNG"
+                                         alt="AND this">
+                                    <p></p>
+                                </ul>
+
+
                         </at>
                     </am>
                 </div>

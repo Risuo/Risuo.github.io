@@ -283,11 +283,14 @@ function initialize() {
         log_2.classList.add('hide');
 
         //console.log('Bounds of Viewport = Bounds of Static Img:', predictionBounds)
-        static_Img = document.createElement('img');
-        static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + centerUrl + '&zoom='
+        // static_Img = document.createElement('img');
+        // static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + centerUrl + '&zoom='
+        //     + mapZoom + '&maptype=satellite' + '&scale=2' + '&size=640x640' +
+        //     '&format=png32' + '&key=' + apiKey + '&v=3.exp&libraries=places&loading=async';
+        // var static_Url = static_Img.src;
+        var static_Url = 'https://maps.googleapis.com/maps/api/staticmap?center=' + centerUrl + '&zoom='
             + mapZoom + '&maptype=satellite' + '&scale=2' + '&size=640x640' +
             '&format=png32' + '&key=' + apiKey + '&v=3.exp&libraries=places&loading=async';
-        var static_Url = static_Img.src;
         if (count === 1) console.log("<br/>");
 
 
@@ -363,7 +366,6 @@ function initialize() {
 
                 const response = await fetch(static_Url);
                 const blob = await response.blob();
-
                 await filename_store.put(blob);
 
                 // Uncomment the next lines if you need the download URL
@@ -401,12 +403,13 @@ function initialize() {
         predicted_Img = document.createElement('img');
 
         var storage = firebase.storage();
-        var predicted_Img_Path = storage.refFromURL('gs://sketcher-app-test-engine.appspot.com/processed_images/' + uid + '_' + count + '.png')
+        var predicted_Img_Path = storage.refFromURL('gs://sketcher-app-test-engine.appspot.com/processed_images/'
+            + uid + '_' + count + '.png')
 
-        var per_count = 0
+
         var tid = setInterval(function () {
             pull_predicted_image()
-        }, 800);
+        }, 500);
 
         function pull_predicted_image() {
             predicted_Img_Path.getDownloadURL().then((url) => {
@@ -461,26 +464,19 @@ function initialize() {
                     })();
                     // logger2.innerHTML += "> Try zooming in closer. Best results tend to be at Zoom Levels 19 and 20.";
                 }
-
                 setTimeout(() => {
                     btnMLBegin.classList.remove('hide');
-
-                }, 1000);
+                }, 500);
                 //log.classList.add('hide');
                 //log_container.classList.add('hide');
                 //log_card.classList.add('hide')
-
-
             }).catch(error => {
-
             });
         }
 
         setTimeout(function () {
             clearInterval(tid)
         }, 100000)
-
-
     });
 }
 
