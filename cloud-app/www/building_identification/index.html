@@ -33,6 +33,9 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="../about.html">About Me!</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="../index.html">Home</a>
                 </li>
                 <li class="nav-item dropdown">
@@ -58,53 +61,54 @@
         </div>
     </div>
 </nav>
-
-<div id="pac-card" class="pac-card">
-    <div id="pac-container">
-        <input id="pac-input" type="text"
-               placeholder="Activate Map (below) Then Enter a location, or swipe within the map"/>
-    </div>
-</div>
-<div id="log_card" class="log_card">
-    <div id="log_container" class="">
-        <div id="log" class=""></div>
-    </div>
-</div>
-<div id="log_card_2" class="log_card_2 hide">
-    <div id="log_container_2" class="hide">
-        <div id="log_2" class="hide">
+<div class="container-xl my-md-4">
+    <div id="pac-card" class="pac-card">
+        <div id="pac-container">
+            <input id="pac-input" type="text"
+                   placeholder="Activate Map (below) Then Enter a location, or swipe within the map"/>
         </div>
     </div>
-</div>
-
-<div class="container">
-    <button id="btnMLBegin" class="hide">Run Building Identification <br/>
-        on current Map View!
-    </button>
-    <!--
-    <div id="zoom_card" class="zoom_card hide">
-        <div id="zoom_container" class="hide">
-            <div id="zoom_log" class="hide">Zoom: [zoom_value]
+    <div id="log_card" class="log_card">
+        <div id="log_container" class="">
+            <div id="log" class=""></div>
+        </div>
+    </div>
+    <div id="log_card_2" class="log_card_2 hide">
+        <div id="log_container_2" class="hide">
+            <div id="log_2" class="hide">
             </div>
         </div>
     </div>
-    -->
-</div>
 
-<div id="map_canvas_container">
-    <div id="activate-map-container">
-        <div id="activate-map">
-            <div id="activate-map-btn">
-                <button onclick="appendMap();
+    <div class="container">
+        <button id="btnMLBegin" class="hide">Run Building Identification <br/>
+            on current Map View!
+        </button>
+        <!--
+        <div id="zoom_card" class="zoom_card hide">
+            <div id="zoom_container" class="hide">
+                <div id="zoom_log" class="hide">Zoom: [zoom_value]
+                </div>
+            </div>
+        </div>
+        -->
+    </div>
+
+    <div id="map_canvas_container">
+        <div id="activate-map-container">
+            <div id="activate-map">
+                <div id="activate-map-btn">
+                    <button onclick="appendMap();
             document.getElementById('map_canvas').style.height = '640px'">Activate map
-                </button>
+                    </button>
+                </div>
+            </div>
+            <div id="map_canvas" class="map_part" style="height:1px;width:640px"></div>
+            <div id="infowindow-content">
             </div>
         </div>
-        <div id="map_canvas" class="map_part" style="height:1px;width:640px"></div>
-        <div id="infowindow-content">
-        </div>
-    </div>
 
+    </div>
 </div>
 <body>
 <!--

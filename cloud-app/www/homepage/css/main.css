@@ -15,10 +15,14 @@ html {
     overflow-y: scroll;
 }
 
-.rounded-button {
+.rounded-box {
     border-radius: 10px;
     border: 1px solid #ccc;
     padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
 }
 
 ::-webkit-scrollbar {

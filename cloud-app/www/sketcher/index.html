@@ -91,152 +91,154 @@
 
 <body>
 
+<div class="container my-md-4" style="max-width: 1500px;">
+    <div class="container-fluid" style="padding-left: 0; padding-right: 0">
 
-<div class="container-fluid" style="padding-left: 0; padding-right: 0">
-
-    <div class="row row-cols-4">
+        <div class="row row-cols-4">
 
 
-        <div class="col-sm-6" style="width: 320px; max-width: 320px">
-            <h4 id='status' style="padding-left: var(--bs-gutter-x,.75rem); ">Loading Model...!</h4>
-            <div class="card">
-                <div class="card-body">
-                    <canvas id="canvas" class="canvas" width=300 height=300
-                            style="margin:auto; border:1px solid #BBBBBB;"></canvas>
-                    <div class="btn-group" style='margin-top:25px; '>
-                        <input type="range" min="8" max="8" value="8" class="slider, hide" id="myRange">
-                        <button type="button" class="btn btn-outline-primary" onclick='erase()'
-                                style='margin-left:10px;' disabled>Clear
-                        </button>
+            <div class="col-sm-6" style="width: 320px; max-width: 320px">
+                <h4 id='status' style="padding-left: var(--bs-gutter-x,.75rem); ">Loading Model...!</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <canvas id="canvas" class="canvas" width=300 height=300
+                                style="margin:auto; border:1px solid #BBBBBB;"></canvas>
+                        <div class="btn-group" style='margin-top:25px; '>
+                            <input type="range" min="8" max="8" value="8" class="slider, hide" id="myRange">
+                            <button type="button" class="btn btn-outline-primary" onclick='erase()'
+                                    style='margin-left:10px;' disabled>Clear
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-6" style="width: 360px; max-width: 360px">
-            <div class="card">
-                <div class="card-body" style="padding:.2rem">
-                    <div class="pieID pie">
-                    </div>
-                    <ul class="pieID legend">
-                        <li>
-                            <em id="sym1"></em>
-                            <span id="prob1"></span>
-                        </li>
-                        <li>
-                            <em id="sym2"></em>
-                            <span id="prob2"></span>
-                        </li>
-                        <li>
-                            <em id="sym3"></em>
-                            <span id="prob3"></span>
-                        </li>
-                        <li>
-                            <em id="sym4"></em>
-                            <span id="prob4"></span>
-                        </li>
-                        <li>
-                            <em id="sym5"></em>
-                            <span id="prob5"></span>
-                        </li>
-                        <li>
-                            <em id="sym6"></em>
-                            <span id="prob6"></span>
-                        </li>
-                        <li>
-                            <em id="sym7"></em>
-                            <span id="prob7"></span>
-                        </li>
-                        <li>
-                            <em id="sym8"></em>
-                            <span id="prob8"></span>
-                        </li>
-                        <li>
-                            <em id="sym9"></em>
-                            <span id="prob9"></span>
-                        </li>
-                        <li>
-                            <em id="sym10"></em>
-                            <span id="prob10"></span>
-                        </li>
-                    </ul>
-                    <canvas id="tensorCanvas1" class="canvas" width=300 height=300
-                            style="margin:auto; border:1px solid #BBBBBB; margin-top: 15px;">
+            <div class="col-sm-6" style="width: 360px; max-width: 360px">
+                <div class="card">
+                    <div class="card-body" style="padding:.2rem">
+                        <div class="pieID pie">
+                        </div>
+                        <ul class="pieID legend">
+                            <li>
+                                <em id="sym1"></em>
+                                <span id="prob1"></span>
+                            </li>
+                            <li>
+                                <em id="sym2"></em>
+                                <span id="prob2"></span>
+                            </li>
+                            <li>
+                                <em id="sym3"></em>
+                                <span id="prob3"></span>
+                            </li>
+                            <li>
+                                <em id="sym4"></em>
+                                <span id="prob4"></span>
+                            </li>
+                            <li>
+                                <em id="sym5"></em>
+                                <span id="prob5"></span>
+                            </li>
+                            <li>
+                                <em id="sym6"></em>
+                                <span id="prob6"></span>
+                            </li>
+                            <li>
+                                <em id="sym7"></em>
+                                <span id="prob7"></span>
+                            </li>
+                            <li>
+                                <em id="sym8"></em>
+                                <span id="prob8"></span>
+                            </li>
+                            <li>
+                                <em id="sym9"></em>
+                                <span id="prob9"></span>
+                            </li>
+                            <li>
+                                <em id="sym10"></em>
+                                <span id="prob10"></span>
+                            </li>
+                        </ul>
+                        <canvas id="tensorCanvas1" class="canvas" width=300 height=300
+                                style="margin:auto; border:1px solid #BBBBBB; margin-top: 15px;">
 
-                    </canvas>
-                    <h4 id='descriptor1' style="padding-left: var(--bs-gutter-x,.75rem); ">^What the 28x28 Model
-                        sees^</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6" style="width: 320px; max-width: 320px">
-            <h4 id='status2' style="padding-left: var(--bs-gutter-x,.75rem); ">Loading Model...!</h4>
-            <div class="card">
-                <div class="card-body">
-                    <canvas id="canvas2" width=300 height=300 style="margin:auto; border:1px solid #BBBBBB;"></canvas>
-                    <div class="btn-group" style='margin-top:25px; '>
-                        <!--    <input type="range" min="7" max="12" value="8" class="slider, hide" id="myRange2">
-                         -->
-                        <button id='clear' type="button" class="btn btn-outline-primary" onclick='erase()'
-                                style='margin-left:10px;' disabled>Clear
-                        </button>
+                        </canvas>
+                        <h4 id='descriptor1' style="padding-left: var(--bs-gutter-x,.75rem); ">^What the 28x28 Model
+                            sees^</h4>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-6" style="width: 360px; max-width: 360px">
-            <div class="card">
-                <div class="card-body" style="padding:.2rem">
-                    <div class="pieID2 pie2">
-
+            <div class="col-sm-6" style="width: 320px; max-width: 320px">
+                <h4 id='status2' style="padding-left: var(--bs-gutter-x,.75rem); ">Loading Model...!</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <canvas id="canvas2" width=300 height=300
+                                style="margin:auto; border:1px solid #BBBBBB;"></canvas>
+                        <div class="btn-group" style='margin-top:25px; '>
+                            <!--    <input type="range" min="7" max="12" value="8" class="slider, hide" id="myRange2">
+                             -->
+                            <button id='clear' type="button" class="btn btn-outline-primary" onclick='erase()'
+                                    style='margin-left:10px;' disabled>Clear
+                            </button>
+                        </div>
                     </div>
-                    <ul class="pieID2 legend2">
-                        <li>
-                            <em id="sym11"></em>
-                            <span id="prob11"></span>
-                        </li>
-                        <li>
-                            <em id="sym12"></em>
-                            <span id="prob12"></span>
-                        </li>
-                        <li>
-                            <em id="sym13"></em>
-                            <span id="prob13"></span>
-                        </li>
-                        <li>
-                            <em id="sym14"></em>
-                            <span id="prob14"></span>
-                        </li>
-                        <li>
-                            <em id="sym15"></em>
-                            <span id="prob15"></span>
-                        </li>
-                        <li>
-                            <em id="sym16"></em>
-                            <span id="prob16"></span>
-                        </li>
-                        <li>
-                            <em id="sym17"></em>
-                            <span id="prob17"></span>
-                        </li>
-                        <li>
-                            <em id="sym18"></em>
-                            <span id="prob18"></span>
-                        </li>
-                        <li>
-                            <em id="sym19"></em>
-                            <span id="prob19"></span>
-                        </li>
-                        <li>
-                            <em id="sym20"></em>
-                            <span id="prob20"></span>
-                        </li>
-                    </ul>
-                    <canvas id="tensorCanvas2" class="canvas" width=300 height=300
-                            style="margin:auto; border:1px solid #BBBBBB; margin-top: 15px;">
+                </div>
+            </div>
+            <div class="col-sm-6" style="width: 360px; max-width: 360px">
+                <div class="card">
+                    <div class="card-body" style="padding:.2rem">
+                        <div class="pieID2 pie2">
 
-                    </canvas>
-                    <h4 id='descriptor2' style="padding-left: var(--bs-gutter-x,.75rem); ">^What the 56x56 Model
-                        sees^</h4>
+                        </div>
+                        <ul class="pieID2 legend2">
+                            <li>
+                                <em id="sym11"></em>
+                                <span id="prob11"></span>
+                            </li>
+                            <li>
+                                <em id="sym12"></em>
+                                <span id="prob12"></span>
+                            </li>
+                            <li>
+                                <em id="sym13"></em>
+                                <span id="prob13"></span>
+                            </li>
+                            <li>
+                                <em id="sym14"></em>
+                                <span id="prob14"></span>
+                            </li>
+                            <li>
+                                <em id="sym15"></em>
+                                <span id="prob15"></span>
+                            </li>
+                            <li>
+                                <em id="sym16"></em>
+                                <span id="prob16"></span>
+                            </li>
+                            <li>
+                                <em id="sym17"></em>
+                                <span id="prob17"></span>
+                            </li>
+                            <li>
+                                <em id="sym18"></em>
+                                <span id="prob18"></span>
+                            </li>
+                            <li>
+                                <em id="sym19"></em>
+                                <span id="prob19"></span>
+                            </li>
+                            <li>
+                                <em id="sym20"></em>
+                                <span id="prob20"></span>
+                            </li>
+                        </ul>
+                        <canvas id="tensorCanvas2" class="canvas" width=300 height=300
+                                style="margin:auto; border:1px solid #BBBBBB; margin-top: 15px;">
+
+                        </canvas>
+                        <h4 id='descriptor2' style="padding-left: var(--bs-gutter-x,.75rem); ">^What the 56x56 Model
+                            sees^</h4>
+                    </div>
                 </div>
             </div>
         </div>
