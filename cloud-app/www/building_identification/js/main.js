@@ -65,7 +65,7 @@ function appendScript(url, callback) {
 }
 
 
-const msg1 = "> Welcome!";
+const msg1 = "> Welcome!"
 const msg2 = "> This is an interactive Detectron2 driven Building Identification project."
 const msg3 = "> You can either input an address above, or click and drag below."
 const msg4 = "> If you are the first user in a while, there will be a slight (~30 seconds) "
@@ -73,29 +73,47 @@ const msg5 = "  Cold-Start delay to your first request."
 const msg6 = "> Subsequent requests should generally be on the order of 10 seconds."
 const msg7 = "> "
 const msg8 = "> Enjoy, and thank you for visiting! - Peter Scott Miller."
-
 const introduction = [msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8];
-
 const cancelIntroduction = {cancelled: false};
 
-function characterPrint(messageArray, cancelThisMessage, timing) { // (array of strings, boolean, integer)
-    (async () => {
+async function asyncCharacterPrint(messageArray, cancelThisMessage, timing) { // (array of strings, boolean, integer)
+    await (async () => {
         for (const line in messageArray) {
             for (const character in messageArray[line]) {
                 console.log(messageArray[line][character]);
                 await new Promise(res => setTimeout(res, timing));
                 if (cancelThisMessage.cancelled) break;
             }
-            console.log("<br/>");
             if (cancelThisMessage.cancelled) break;
+            console.log("<br/>");
         }
     })();
+}
+
+function characterPrint(messageArray, timing) {
+    let currentIndex = 0;
+
+    function printMessage() {
+        if (currentIndex >= messageArray.length) {
+            return;
+        }
+        const message = messageArray[currentIndex];
+
+        for (const character of message) {
+            console.log(character);
+        }
+        console.log("<br/>");
+        currentIndex++;
+        setTimeout(printMessage, timing);
+    }
+
+    printMessage();
 }
 
 function appendMap() {
     appendScript("https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&v=3.exp&libraries=places", function () {
         $("#activate-map").css("display", "none");
-        characterPrint(introduction, cancelIntroduction, 40);
+        asyncCharacterPrint(introduction, cancelIntroduction, 30);
         // (async () => {
         //     for (message in messages) {
         //         // console.log(messages[message])
@@ -264,40 +282,115 @@ function initialize() {
         log_card_2.classList.add('hide')
         log_2.classList.add('hide');
 
-
         //console.log('Bounds of Viewport = Bounds of Static Img:', predictionBounds)
         static_Img = document.createElement('img');
         static_Img.src = 'https://maps.googleapis.com/maps/api/staticmap?center=' + centerUrl + '&zoom='
             + mapZoom + '&maptype=satellite' + '&scale=2' + '&size=640x640' +
             '&format=png32' + '&key=' + apiKey + '&v=3.exp&libraries=places&loading=async';
         var static_Url = static_Img.src;
-        console.log("<br/><br/>> Static Image " + count + " identified. <br /> > Center coordinates: " + centerUrl + ".<br /> " +
-            "> Zoom Level: " + mapZoom + ".<br /> > Transferring image to ML processing container. <br />> ")
-        //console.log('static_Img URL:', static_Url)
-        var uid = firebase.auth().currentUser.uid;
-        //console.log(uid)
-        var filename_store = firebase.storage().ref('satellite_screenshots/' + uid + '_' + count);
+        if (count === 1) console.log("<br/>");
 
-        fetch(static_Url).then(res => {
-            return res.blob();
-        }).then(blob => {
-            filename_store.put(blob)
 
-                // .then(function (snapshot) { // actually, might be able to remove after the put(blob) bit.
-                //     return snapshot.ref.getDownloadURL()
-                // })
-                .then(url => { // This and the next 2 lines, starting at .then ending with }) can be removed once debugging is done
-                    if (count === 1) {
-                        console.log("<br />> Possible cold-start mode detected. Additional time for processing may be " +
-                            "required. Subsequent requests will (generally) be quicker. See details page for more information.")
-                    }
-                    console.log("<br />> Image received by ML processing container.<br />> Beginning ML Processing.<br />> ");
+        // old working version
+        // (async () => {
+        //     await asyncCharacterPrint(transferringMessage, cancelTransferring, 30);
+        //
+        //     // console.log("<br/><br/>> Static Image " + count + " identified. <br /> > Center coordinates: " + centerUrl + ".<br /> " +
+        //     //     "> Zoom Level: " + mapZoom + ".<br /> > Transferring image to ML processing container. <br />> ")
+        //
+        //     //console.log('static_Img URL:', static_Url)
+        //     var uid = firebase.auth().currentUser.uid;
+        //     //console.log(uid)
+        //     var filename_store = firebase.storage().ref('satellite_screenshots/' + uid + '_' + count);
+        //
+        //     fetch(static_Url).then(res => {
+        //         return res.blob();
+        //     }).then(blob => {
+        //         filename_store.put(blob)
+        //
+        //             // .then(function (snapshot) { // actually, might be able to remove after the put(blob) bit.
+        //             //     return snapshot.ref.getDownloadURL()
+        //             // })
+        //             .then(url => { // This and the next 2 lines, starting at .then ending with }) can be removed once debugging is done
+        //                 // if (count === 1) {
+        //                 //     console.log("<br />> Possible cold-start mode detected. Additional time for processing may be " +
+        //                 //         "required. Subsequent requests will (generally) be quicker. See details page for more information.")
+        //                 // }
+        //                 let msg1 = "> Image received by ML processing container.";
+        //                 let msg2 = "> Beginning ML Processing.";
+        //                 let imageReceived = [msg1, msg2];
+        //                 let cancelImageReceived = {cancelled: false};
+        //                 asyncCharacterPrint(imageReceived, cancelImageReceived, 30)
+        //                 // console.log("<br />> Image received by ML processing container.<br />> Beginning ML Processing.<br />> ");
+        //
+        //             })
+        //
+        //     }).catch(error => {
+        //         console.error(error);
+        //     });
+        // })();
 
-                })
 
-        }).catch(error => {
-            console.error(error);
-        });
+        // current working version
+        // (async () => {
+        //     await asyncCharacterPrint(transferringMessage, cancelTransferring, 30);
+        //     var uid = firebase.auth().currentUser.uid;
+        //     var filename_store = firebase.storage().ref('satellite_screenshots/' + uid + '_' + count);
+        //
+        //
+        //     const response = await fetch(static_Url);
+        //     const blob = await response.blob();
+        //
+        //     await filename_store.put(blob);
+        //
+        //     // Uncomment the next lines if you need the download URL
+        //     // const url = await filename_store.getDownloadURL();
+        //     // console.log('Download URL:', url);
+        //
+        //     let msg1 = "> Image received by ML processing container.";
+        //     let msg2 = "> Beginning ML Processing.";
+        //     let imageReceived = [msg1, msg2];
+        //     let cancelImageReceived = {cancelled: false};
+        //     await asyncCharacterPrint(imageReceived, cancelImageReceived, 30);
+        // })();
+
+
+        (async () => {
+            // Concurrently start fetching and storing the file
+            const fetchAndStorePromise = (async () => {
+                var uid = firebase.auth().currentUser.uid;
+                var filename_store = firebase.storage().ref('satellite_screenshots/' + uid + '_' + count);
+
+                const response = await fetch(static_Url);
+                const blob = await response.blob();
+
+                await filename_store.put(blob);
+
+                // Uncomment the next lines if you need the download URL
+                // const url = await filename_store.getDownloadURL();
+                // console.log('Download URL:', url);
+            })();
+
+            // Concurrently start the first asyncCharacterPrint
+            let msg1b = "> Static Image " + count + " identified."
+            let msg2b = "> Center coordinates: " + centerUrl + "."
+            let msg3b = "> Zoom Level: " + mapZoom + "."
+            let msg4b = "> Transferring image to ML processing container. "
+            let transferringMessage = [msg1b, msg2b, msg3b, msg4b];
+            let cancelTransferring = {cancelled: false};
+
+            const asyncPrintPromise = asyncCharacterPrint(transferringMessage, cancelTransferring, 30);
+
+            // Wait for both promises to complete before proceeding
+            await Promise.all([fetchAndStorePromise, asyncPrintPromise]);
+
+            // Now, proceed to the second asyncCharacterPrint
+            let msg1 = "> Image received by ML processing container.";
+            let msg2 = "> Beginning ML Processing.";
+            let imageReceived = [msg1, msg2];
+            let cancelImageReceived = {cancelled: false};
+            await asyncCharacterPrint(imageReceived, cancelImageReceived, 30);
+        })();
 
 
         //btnMLShow.addEventListener('click',    e => {
@@ -313,14 +406,7 @@ function initialize() {
         var per_count = 0
         var tid = setInterval(function () {
             pull_predicted_image()
-            console.log('.')
-            per_count += 1
-            if (per_count % 96 === 0) {
-                console.log("<br />")
-                per_count = 0
-            } else {
-            }
-        }, 1000);
+        }, 800);
 
         function pull_predicted_image() {
             predicted_Img_Path.getDownloadURL().then((url) => {
@@ -329,23 +415,34 @@ function initialize() {
                 predictionOverlay = new google.maps.GroundOverlay(
                     predicted_Img.src, predictionBounds
                 );
-
                 clearInterval(tid)
+                predictionOverlay.setMap(map);
+                let msgc1 = "> Best results tend to be in clearer (less tree-cover) higher-resolution areas, ";
+                let msgc2 = "> (not all satellite imagery sources are of uniform quality).";
+                let msgc3 = "> Processed Map Overlay displayed below."
+                let firstImageDisplayed = [msgc1, msgc2, msgc3];
+                let imageDisplayed = [msgc3]
+                let cancelImageDisplayed = {cancelled: false};
                 if (count === 1) {
-                    setTimeout(() => {
-                        console.log("<br /> > Best results tend to be in clearer (less tree-cover) higher-resolution " +
-                            "areas (satellite imagery sources are not of uniform quality).");
-                    }, 200);
-                }
-                setTimeout(() => {
-                    console.log("<br /> > Predicted Image displayed below. <br /><br />");
-                }, 400);
+                    asyncCharacterPrint(firstImageDisplayed, cancelImageDisplayed, 30)
+                } else asyncCharacterPrint(imageDisplayed, cancelImageDisplayed, 30);
+
+
+                // if (count === 1) {
+                //     setTimeout(() => {
+                //         console.log("<br /> > Best results tend to be in clearer (less tree-cover) higher-resolution " +
+                //             "areas (satellite imagery sources are not of uniform quality).");
+                //     }, 200);
+                // }
                 // setTimeout(() => {
-                //     console.log("<br /> > For a pre-selected 'high performance' result, click 'Pre-selected' below.");
-                // }, 600);
-                setTimeout(() => {
-                    predictionOverlay.setMap(map);
-                }, 800);
+                //     console.log("<br /> > Predicted Image displayed below. <br /><br />");
+                // }, 400);
+                // // setTimeout(() => {
+                // //     console.log("<br /> > For a pre-selected 'high performance' result, click 'Pre-selected' below.");
+                // // }, 600);
+                // setTimeout(() => {
+                //     predictionOverlay.setMap(map);
+                // }, 500);
 
                 //btnMLShow.classList.remove('hide')
 
@@ -355,7 +452,14 @@ function initialize() {
                     log_card_2.classList.remove('hide')
                     log_2.classList.remove('hide');
                     var logger2 = document.getElementById('log_2');
-                    logger2.innerHTML += "> Try zooming in closer. Best results tend to be at Zoom Levels 19 and 20.";
+                    let errorZoomMessage = "> Try zooming in closer. Best results tend to be at Zoom Levels 19 and 20.";
+                    (async () => {
+                        for (let character in errorZoomMessage) {
+                            logger2.innerHTML += errorZoomMessage[character];
+                            await new Promise(res => setTimeout(res, 40));
+                        }
+                    })();
+                    // logger2.innerHTML += "> Try zooming in closer. Best results tend to be at Zoom Levels 19 and 20.";
                 }
 
                 setTimeout(() => {
@@ -374,7 +478,7 @@ function initialize() {
 
         setTimeout(function () {
             clearInterval(tid)
-        }, 350000)
+        }, 100000)
 
 
     });
