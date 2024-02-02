@@ -11,6 +11,7 @@ var predictionOverlay;
 var predictionBounds;
 var count;
 var apiKey = "AIzaSyCiTASyv4ikDvjz3nRgbGNiUAn-Z4MOLlI";
+let shouldIlogDots = true;
 
 
 // Your web app's Firebase configuration
@@ -132,6 +133,15 @@ function appendMap() {
     });
 }
 
+async function logDots() {
+    const intervalId = setInterval(() => {
+        if (shouldIlogDots) {
+            console.log('.');
+        } else {
+            clearInterval(intervalId); // Stop logging dots when stopLogging is true
+        }
+    }, 500);
+}
 
 function initialize() {
     firebase.auth().signOut()
@@ -391,7 +401,11 @@ function initialize() {
             let msg2 = "> Beginning ML Processing.";
             let imageReceived = [msg1, msg2];
             let cancelImageReceived = {cancelled: false};
-            await asyncCharacterPrint(imageReceived, cancelImageReceived, 30);
+            const shouldILogDots = asyncCharacterPrint(imageReceived, cancelImageReceived, 30);
+
+            await Promise.all([fetchAndStorePromise, asyncPrintPromise, shouldILogDots]);
+            await logDots();
+
         })();
 
 
@@ -413,6 +427,8 @@ function initialize() {
 
         function pull_predicted_image() {
             predicted_Img_Path.getDownloadURL().then((url) => {
+                shouldIlogDots = false;
+                console.log("<br/>")
                 predicted_Img.src = url
                 //console.log('Predicted_Img uploaded here:', predicted_Img.src)
                 predictionOverlay = new google.maps.GroundOverlay(
@@ -483,6 +499,7 @@ function initialize() {
 function clear_logs() {
     //$('#log').empty()
     $('#log_2').empty()
+    shouldIlogDots = true;
 }
 
 (function () {

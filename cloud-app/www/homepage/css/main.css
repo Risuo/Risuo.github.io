@@ -15,6 +15,15 @@ html {
     overflow-y: scroll;
 }
 
+#screenshot {
+    position: absolute;
+    border: 1px solid #ccc;
+    background: #333;
+    padding: 5px;
+    display: none;
+    color: #fff;
+}
+
 .rounded-box {
     border-radius: 10px;
     border: 1px solid #ccc;
