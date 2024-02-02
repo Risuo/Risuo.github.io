@@ -134,6 +134,7 @@ function appendMap() {
 }
 
 async function logDots() {
+    console.log('> ');
     const intervalId = setInterval(() => {
         if (shouldIlogDots) {
             console.log('.');
@@ -480,9 +481,17 @@ function initialize() {
                     })();
                     // logger2.innerHTML += "> Try zooming in closer. Best results tend to be at Zoom Levels 19 and 20.";
                 }
-                setTimeout(() => {
-                    btnMLBegin.classList.remove('hide');
-                }, 500);
+                if (count === 1) {
+                    setTimeout(() => {
+
+                        btnMLBegin.classList.remove('hide');
+                    }, 6150);
+                } else {
+                    setTimeout(() => {
+                        btnMLBegin.classList.remove('hide');
+                    }, 1250);
+                }
+
                 //log.classList.add('hide');
                 //log_container.classList.add('hide');
                 //log_card.classList.add('hide')
